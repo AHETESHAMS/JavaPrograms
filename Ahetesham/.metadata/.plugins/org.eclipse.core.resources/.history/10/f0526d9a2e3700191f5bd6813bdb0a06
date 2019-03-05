@@ -1,0 +1,20 @@
+package com.bridgelabz.programs.functional;
+
+public class LeapYear {
+	public static void main(String []args)
+	{
+		int year;
+		
+		System.out.println("Enter the Year:=");
+		
+		year = FunctionalUtil.singleIntegerInput();
+		
+		int cnt = FunctionalUtil.countLeapYear(year);
+		
+		if(cnt==4)
+			FunctionalUtil.checkLeapYear(year);
+		
+		else
+			System.out.println("Enter a valid year!");
+	}
+}

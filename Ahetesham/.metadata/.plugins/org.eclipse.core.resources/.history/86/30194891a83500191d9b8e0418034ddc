@@ -1,0 +1,31 @@
+package ObjectOrientedPrograms;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Iterator; 
+import java.util.Map; 
+  
+import org.json.simple.JSONArray; 
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*; 
+public class Json {
+
+	public static void main(String []args) throws FileNotFoundException, IOException, ParseException
+	{
+		Object obj = new JSONParser().parse(new FileReader("JsonFile.json"));
+		JSONObject jo = (JSONObject) obj;
+		JSONArray rice = (JSONArray) jo.get("rice");
+		System.out.println("Rice Total Price=>");
+		for(int i=0;i<rice.size();i++)
+		{
+			JSONObject o = (JSONObject) rice.get(i);
+			String name = (String) o.get("name");
+			System.out.println("Name is:="+name);
+			int price = Integer.parseInt( (String) o.get("price"));
+			int weight = Integer.parseInt( (String) o.get("weight"));
+			int totalPrice = price*weight;
+			System.out.println("price of "+name+" for"+ weight+" kg is:="+totalPrice);
+		}	
+	}
+
+}

@@ -1,0 +1,15 @@
+package com.bridgelabz.programs.functional;
+
+import com.bridgelabz.programs.util.FunctionalUtil;
+
+public class UserNameVerification {
+	public static void main(String []args)
+	{
+		System.out.print("Enter the User Name:=");
+		
+		String name = FunctionalUtil.singleStringInput();
+		
+		FunctionalUtil.checkUserLength(name);
+		
+	}
+}

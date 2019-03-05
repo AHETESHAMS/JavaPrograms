@@ -1,0 +1,18 @@
+package com.bridgelabz.programs.oops;
+
+import com.bridgelabz.programs.ds.LinkedList;
+
+public class Test {
+
+	public static void main(String[] args) {
+		LinkedList l1 = new LinkedList();
+		l1.insertAtLast("2");
+		l1.insertAtLast("4");
+		l1.insertAtLast("2");
+		l1.insertAtLast("8");
+		String item = l1.getElementAtPosition(2);
+		System.out.println(item);
+
+	}
+
+}

@@ -1,0 +1,56 @@
+package ObjectOrientedPrograms;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import org.json.simple.JSONArray; 
+import org.json.simple.JSONObject; 
+import org.json.simple.parser.*;
+
+import com.BridgeLabz.FunctionalPrograms.Utility;
+
+public class SharesJson {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+		int cnt=0,j=0,numberOfCompanies=0;
+		String strArray[]= new String[10];
+		Object obj = new JSONParser().parse(new FileReader("Shares.json"));
+		JSONObject jo = (JSONObject) obj;
+		JSONArray companies = (JSONArray) jo.get("companies");
+		System.out.println("Enter the number of companies you want to buy shares:=");
+		numberOfCompanies = Utility.singleIntegerInput();
+		System.out.println("Enter the Company name to buy shares:=");
+		for(int i=0;i<numberOfCompanies;i++)
+		{
+			strArray[i] = Utility.singleStringInput();
+			System.out.println("String :"+strArray[i]);
+		}		
+		System.out.println("size "+companies.size());
+		for(j=0;j<companies.size();j++)
+		{
+			JSONObject o = (JSONObject) companies.get(j);
+			String name = (String) o.get("name");
+			int price =  Integer.parseInt( (String) o.get("price"));
+			int stock =  Integer.parseInt( (String) o.get("stock"));
+			if(strArray[j].equals(name))
+			{
+				cnt=1;
+				System.out.println("Price of "+name+" is: "+price);
+				System.out.println(stock+" Shares are available in Stock!");
+				System.out.println("How many Shares You want?");
+				int numberOfShares = Utility.singleIntegerInput();
+				if(numberOfShares>stock)
+				{
+					System.out.println("Available stock is "+stock+" couldn't assign "+numberOfShares+" shares!");
+				}
+				else
+				{
+					int total = numberOfShares*price;
+					System.out.println("Total amount of buyed shares is "+total);
+				}	
+			}
+		}	
+		if(cnt==0)
+			System.out.println(strArray[j]+" is not currently available!");
+	}
+
+}

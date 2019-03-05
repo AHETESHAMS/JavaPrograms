@@ -1,0 +1,25 @@
+package com.bridgelabz.programs.functional;
+import java.util.*;
+
+import com.bridgelabz.programs.util.FunctionalUtil;
+class StopWatch
+{
+	public static void main(String []args) throws InterruptedException
+	{
+		Date date = new Date();
+		
+		Long start = FunctionalUtil.start();
+		
+	    System.out.println("Start time:="+date.toString());
+		
+		Thread.sleep(5000);
+		
+		Long stop = FunctionalUtil.stop();
+		
+	    System.out.println("Stop time:="+date.toString());
+		
+		Long time = FunctionalUtil.timeEllapse(start,stop);
+		
+		System.out.print("Time ellapse:="+time);
+	}
+}

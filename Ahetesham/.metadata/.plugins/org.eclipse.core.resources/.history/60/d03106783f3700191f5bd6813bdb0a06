@@ -1,0 +1,42 @@
+package com.bridgelabz.programs.ds;
+
+import com.bridgelabz.programs.utils.AlgoUtil;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+
+public class CalendarQueue {
+
+	public static void main(String[] args) {
+		int spaces;
+		//Creating an object of queue in a linked list
+		LinkedList calendarQueue = new LinkedList();
+		System.out.println("Enter the Year");
+		int year = FunctionalUtil.singleIntegerInput();
+		System.out.println("Enter the Start Day of month");
+		int month = FunctionalUtil.singleIntegerInput();
+		int day = AlgoUtil.dayOfWeek(1, month, year);
+		//spaces = startDayOfMonth;
+		String [] months = {"","January","February","March","April","May","June","July","August",
+							"September","October","November","December"};
+		int days[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		if((year%400==0)&&(year%100!=0)||(year%4==0)&&month==2)
+				days[month]=29;
+			System.out.println("          "+ months[month] + " " + year);
+			System.out.println("______________________________________");
+            System.out.println("   Sun  Mon  Tue  Wed  Thu  Fri  Sat");
+            spaces = (days[month-1] + spaces)%7;
+            for(int i=1;i<=days[month];i++)
+            {
+            	calendarQueue.insertAtLast(Integer.toString(i));
+            }
+            for (int i = 0; i < day; i++)
+                System.out.print("     ");
+            for(int i=1;i<=days[month];i++)
+            {
+         
+            	 System.out.printf(" %3d ", Integer.parseInt(calendarQueue.deleteAtFirst()));
+            	if (((i + spaces) % 7 == 0) || (i == days[month])) System.out.println();
+            }	
+            System.out.println();
+         }
+	}
+	

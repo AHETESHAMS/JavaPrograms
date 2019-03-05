@@ -1,0 +1,22 @@
+package com.oops.model;
+import java.io.Serializable;
+
+import com.bridgelabz.programs.utils.JsonUtil;
+/**
+ * Purpose : Creating program to process the data using Json
+ * @author Ahetesham
+ * Date : 25/02/2019
+ */
+public class CommercialDataProcessing {
+
+	public static void main(String[] args) {
+		Person p1 = new Person();
+		p1.setName("Akash");
+		p1.setPhNumber("9989698478");
+		p1.setCash("500000");
+		String jsonPerson = JsonUtil.convertJavaToJson(p1);
+		System.out.println(jsonPerson);
+		
+	}
+
+}

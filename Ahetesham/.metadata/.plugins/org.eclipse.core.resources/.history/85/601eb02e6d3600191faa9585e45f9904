@@ -1,0 +1,27 @@
+package ObjectOrientedPrograms;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class RegularExpression {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+		Object obj = new JSONParser().parse(new FileReader("Regex.json"));
+		JSONObject jo = (JSONObject) obj;
+		JSONObject regex = (JSONObject) jo.get("Regex");
+		String msg = (String) regex.get("msg");
+		System.out.println(msg);
+		String patt = "<+.{4}>+";		
+		msg = msg.replaceAll(patt,"Ahetesham");
+		patt = "<+.{9}>+";		
+		msg = msg.replaceAll(patt,"Ahetesham");
+
+		System.out.println("Mssage is:="+msg);
+	}
+
+}

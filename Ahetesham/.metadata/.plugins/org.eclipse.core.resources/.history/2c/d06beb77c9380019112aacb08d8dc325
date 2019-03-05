@@ -1,0 +1,186 @@
+package com.bridgelabz.programs.utils;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.rmi.CORBA.Util;
+
+import com.bridgelabz.programs.ds.LinkedList;
+import com.bridgelabz.programs.ds.Stack;
+
+public class DSUtil {
+	
+	/**
+	 * Function: Used to Read a File
+	 * @param word: Array of String 
+	 * @return: Array of String
+	 */
+	public static String[] readFile(String []word)
+	{
+		File file = new File("xyz.txt");
+		try
+		{
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String str = br.readLine();
+			while(br.readLine()!=null)
+			{
+				str = str+br.readLine();
+			}
+			word = str.split(" ");
+			FileWriter fr = new FileWriter("xyz.txt");
+			fr.write("");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return word;
+	}
+
+	/**
+	 * Function: Used to Write a File
+	 * @param wordList: Is an Object of LinkedList
+	 * @return: wordList of Type LinkedList
+	 */
+	public static LinkedList writeFile(LinkedList wordList) 
+		{
+		try
+		{
+			BufferedWriter bw = new BufferedWriter(new FileWriter("xyz.txt",true));
+			while(!wordList.isEmpty()) 
+			{
+				bw.write(wordList.get()+" ");
+			}
+		    bw.flush();
+			bw.close();
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return wordList;
+		}
+	/**
+	 * Function: Checking if Pair is matching in the expression.
+	 * @param charachter1: It is of type character holding opening parenthesis
+	 * @param charachter2: It is of type character holding closing parenthesis
+	 * @return: boolean
+	 */
+	
+	public static boolean isMatchingPair(char charachter1,char charachter2)
+	{
+		if(charachter1 == '(' && charachter2 == ')')
+			return true;
+		else if(charachter1 == '{' && charachter2 == '}')
+			return true;
+		else if(charachter1 == '[' && charachter2 == ']')
+			return true;
+		else
+			return false;
+			
+	}
+	
+	/**
+	 * Function: Checks Whether parenthesis are not balanced
+	 * @param exp: character array
+	 * @return: boolean
+	 */
+	public static boolean areParenthesBalance(char exp[])
+	{
+		Stack st = new Stack();
+		for(int i=0;i<exp.length;i++)
+		{
+			if(exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
+				st.push(exp[i]);
+			if(exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
+			{
+				if(st.isEmpty())
+				{
+					return false;
+				}
+				else if(!isMatchingPair(st.pop(),exp[i]))
+				{
+					return false;
+				}
+			}
+		}
+		if(st.isEmpty())
+			return true;
+		else
+		{
+			return false;
+		}	
+	}
+	public static int deposit(int balance)
+	{
+		int amnt=0;
+		System.out.println("Enter Amount to Deposit:=");
+		amnt = FunctionalUtil.singleIntegerInput();
+		balance = balance+amnt;
+		return balance;
+	}
+	public static int withDraw(int balance)
+	{
+		int amnt=0;
+		System.out.println("Enter the Cash Amount to Withdraw:=");
+		amnt = FunctionalUtil.singleIntegerInput();
+		if(amnt > balance)
+			throw new ArithmeticException("Insufficient Balance");
+		else
+		{
+			balance = balance-amnt;
+		}
+		return balance;
+	}
+	/**
+	 * Function : To calculate Binomial Coefficient
+	 * @param n : Integer
+	 * @param k : Integer
+	 * @return  : Integer
+	 */
+	public static int binomialCoef(int n,int k)
+	{
+		int res = 1;
+		for(int i=0;i<k;++i)
+		{
+			res*= (n-i);
+			res/= (i+1);
+		}
+		return res;
+	}
+	/**
+	 * Function : Calculating Catlan number
+	 * @param n : Integer Value 
+	 * @return  : Integer Value
+	 */
+	public static int catlanNumber(int n)
+	{
+		int c = binomialCoef(2*n,n);
+		return c/(n+1);
+	}
+	/**
+	 * Function : Calculating Number of Tree Combinations
+	 * @param n : Integer
+	 * @return  : Integer
+	 */
+	public static int calBST(int n)
+	{
+		int count = catlanNumber(n);
+			return count;
+	}
+
+	public static int[] getIntegersFromFile(String fileName) {
+		try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+			Integer [] s = stream.toArray(size -> new Integer[size]);
+			System.out.println(s.toString());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

@@ -1,0 +1,12 @@
+package ObjectOrientedPrograms;
+
+import java.util.Random;
+
+public class ObjectOrientedUtility {
+
+	static Random r = new Random();
+	public static int randomValueGenerator(int value)
+	{
+		return(r.nextInt(value));
+	}
+}

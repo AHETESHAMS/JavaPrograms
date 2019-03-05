@@ -1,0 +1,54 @@
+package com.bridgelabz.programs.oops;
+
+import com.bridgelabz.programs.ds.LinkedList;
+
+public class DeckOfCardWithQueue {
+	public static void main(String []args)
+	{
+		int cnt=0;
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		LinkedList queueListNumbers = new LinkedList();
+		LinkedList queueListSuits = new LinkedList();
+		LinkedList queueListPlayers = new LinkedList();
+		do
+		{
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =(ObjectOrientedUtility.randomValueGenerator(13))+1;
+			int player =(ObjectOrientedUtility.randomValueGenerator(3))+1;
+			boolean found = queueListNumbers.search(Integer.toString(cardNumber));
+			if(found)
+			{
+				cardNumber = (ObjectOrientedUtility.randomValueGenerator(13))+1;
+			}
+			else
+			{
+				queueListNumbers.insertAtLast(Integer.toString(cardNumber));
+				queueListSuits.insertAtLast(suit[suitIndex]);
+				queueListPlayers.insertAtLast(Integer.toString(player));
+				cnt++;
+			}
+			if(cnt>=36)
+				break;
+		}while(true);
+		queueListNumbers.sortList();
+		for(int i=0;i<36;i++)
+		{
+			String eachNumber = queueListNumbers.deleteAtFirst(); 
+			String eachSuit = queueListSuits.deleteAtFirst();
+			String eachPlayer = queueListPlayers.deleteAtFirst();
+			if(eachNumber.equals(13))
+			{
+				eachSuit = "King";
+			}
+			else if(eachNumber.equals(11))
+			{
+				eachSuit = "Jack";
+			}
+			else if(eachNumber.equals(12))
+			{
+				eachSuit = "Quin";
+			}
+			System.out.println("Player"+eachPlayer+" got "+eachNumber+" of "+eachSuit);
+		}
+	}
+}

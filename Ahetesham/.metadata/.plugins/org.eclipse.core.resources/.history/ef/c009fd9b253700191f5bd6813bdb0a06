@@ -1,0 +1,45 @@
+package ObjectOrientedPrograms;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class DeckOfCards {
+
+	public static void main(String[] args) {
+		
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		Map<Integer,String> map =new HashMap(); 
+		//map.put(2, "spade");
+		int cnt=0;
+		do
+		{	
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =ObjectOrientedUtility.randomValueGenerator(52);
+			if(map.get(cardNumber) == null)
+			{
+				map.put(cardNumber, suit[suitIndex]);
+				cnt++;
+				//System.out.println("in if cnt:="+cnt);
+			}
+			else if(map.get(cardNumber).equals(suit[suitIndex]))
+			{
+				cardNumber =ObjectOrientedUtility.randomValueGenerator(52);
+				System.out.println("in else if cnt:="+cnt);
+			}
+			else
+			{
+				map.put(cardNumber, suit[suitIndex]);
+				cnt++;
+				//System.out.println("in else cnt:="+cnt);
+			}
+			if(cnt>=36)
+				break;
+		}while(true);
+		System.out.println("cnt:"+cnt);
+		Set <Integer> keys = map.keySet();
+		for(int key : keys)
+		System.out.println(key+" :"+map.get(key));
+	}
+
+}

@@ -1,0 +1,35 @@
+package com.bridgelabz.datastructure;
+
+import java.util.ArrayList;
+
+import com.BridgeLabz.FunctionalPrograms.Utility;
+
+public class Prime2D {
+
+	public static void main(String[] args) {
+		ArrayList list[]= new ArrayList[10];
+		int cnt=0,i=0,temp=100;
+		for(int j=0;j<10;j++)
+		{
+			list[i] = new ArrayList();
+		}
+		while(i<10)
+		{
+			for(int num=1;num<=1000;num++)
+			{
+				cnt = Utility.checkPrime(num);	
+				if(cnt==0)
+					list[i].add(num);
+				if(num==temp)
+				{
+					i++;
+					temp=temp+100;
+				}
+					
+			}	
+		
+		}
+		System.out.println(list);
+
+	}
+}

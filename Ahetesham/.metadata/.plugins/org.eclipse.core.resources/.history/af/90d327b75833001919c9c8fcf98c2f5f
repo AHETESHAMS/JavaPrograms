@@ -1,0 +1,21 @@
+package com.bridgelabz.datastructure;
+
+public class Prime2D {
+
+	public static void main(String[] args) {
+		int num = 3;
+		int cnt=0;
+		while(num<=100)
+		{
+			for(int i=1;i<num;i++)
+			{
+				if(num%i==0)
+					cnt++;
+			}
+			if(cnt==0)
+				System.out.println(num);
+			num++;
+		}
+
+	}
+}

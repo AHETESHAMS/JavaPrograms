@@ -1,0 +1,16 @@
+package com.bridgelabz.programs.utils;
+
+import com.oops.model.CommercialDataProcessing;
+
+public class JsonUtil {
+
+		private static ObjectMapper mapper;
+		static 
+		{
+			mapper = new ObjectMapper();
+		}
+		public static String convertJavaToJson(Object object)
+		{
+			String jsonResult = mapper.writeValueAsString(object);
+		}
+}

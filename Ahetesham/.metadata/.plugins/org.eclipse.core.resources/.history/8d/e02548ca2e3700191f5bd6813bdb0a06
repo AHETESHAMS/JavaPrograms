@@ -1,0 +1,20 @@
+/**
+ * Purpose : Determines whether a Parenthesis are Balanced or Not.
+ * Author : Ahetesham Ahamad
+ */
+package com.bridgelabz.programs.ds;
+import com.bridgelabz.dsutility.DSUtility;
+import com.bridgelabz.programs.util.FunctionalUtil;
+public class BalancedParenthesis {
+	
+	public static void main(String[] args) {
+		System.out.println("Enter the expression:=");
+		String str  = FunctionalUtil.singleStringInput();
+		char []exp = str.toCharArray();
+		if(DSUtility.areParenthesBalance(exp))
+			System.out.println("Balanced!");
+		else
+			System.out.println("Not Balanced!");
+	}
+
+}

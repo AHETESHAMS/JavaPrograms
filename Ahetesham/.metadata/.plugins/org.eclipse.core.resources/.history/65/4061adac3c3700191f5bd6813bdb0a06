@@ -1,0 +1,15 @@
+package com.bridgelabz.programs.algo;
+
+import com.bridgelabz.programs.utils.FunctionalUtil;
+
+public class Date {
+	public static void main(String []args)
+	{
+		int d, m, y;
+		System.out.println("enter date in day month year");
+		d = FunctionalUtil.singleIntegerInput();
+		m = FunctionalUtil.singleIntegerInput();
+		y = FunctionalUtil.singleIntegerInput();
+		System.out.println("day is "+AlgoUtil.dayOfWeek(d, m, y));
+	}
+}

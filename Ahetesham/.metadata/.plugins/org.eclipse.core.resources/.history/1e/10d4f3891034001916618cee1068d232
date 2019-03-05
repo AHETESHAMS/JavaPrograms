@@ -1,0 +1,16 @@
+package com.bridgelabz.datastructure;
+
+import java.util.ArrayList;
+
+public class HashingFunction {
+
+	public static void main(String[] args) {
+		
+		ArrayList[] hashingList = new ArrayList[10];
+		for(int i=0;i<10;i++)
+		{
+			hashingList[i] = new ArrayList();
+		}
+	}
+
+}

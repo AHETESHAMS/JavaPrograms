@@ -1,0 +1,17 @@
+package com.bridgelabz.programs.algo;
+
+import com.bridgelabz.programs.util.FunctionalUtil;
+
+public class SquareRoot 
+{
+		public static void main(String[] args)  
+		{
+				System.out.println("Enter No to Find Square Root");
+				double c = FunctionalUtil.singleIntegerInput();
+				System.out.println("square root is " + Util.sqrt(c));
+		} 
+			
+
+}
+
+

@@ -1,0 +1,32 @@
+package com.bridgelabz.programs.ds;
+
+import com.bridgelabz.programs.algo.Util;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+
+public class Calendar {
+	public static void main(String[] args) {
+		System.out.println("Enter the Year");
+		int year = FunctionalUtil.singleIntegerInput();
+		System.out.println("Enter the month");
+		int month = FunctionalUtil.singleIntegerInput();
+		int day = Util.dayOfWeek(1, month, year);
+		String[] months = { "", "January", "February", "March", "April", "May", "June", "July", "August", "September",
+				"October", "November", "December" };
+		int days[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		if ((year % 400 == 0) && (year % 100 != 0) || (year % 4 == 0) && month == 2)
+			days[month] = 29;
+		System.out.println("          " + months[month] + " " + year);
+		System.out.println("______________________________________");
+		System.out.println("   Sun  Mon  Tue  Wed  Thu  Fri  Sat");
+		spaces = (days[month - 1] + day) % 7;
+		for (int i = 0; i < day; i++)
+			System.out.print("     ");
+		for (int i = 1; i <= days[month]; i++) {
+			System.out.printf(" %3d ", i);
+			if (((i + day) % 7 == 0) || (i == days[month]))
+				System.out.println();
+		}
+		System.out.println();
+	}
+}
+

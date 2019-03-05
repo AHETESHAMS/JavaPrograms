@@ -1,0 +1,24 @@
+package com.bridgelabz.programs.oops;
+class Person
+{
+	String name,phNumber,cash;
+	public Person(String name,String phNumber,String cash)
+	{
+		this.name = name;
+		this.phNumber = phNumber;
+		this.cash = cash;
+	}
+}
+/**
+ * Purpose : Creating program to process the data using Json
+ * @author Ahetesham
+ * Date : 25/02/2019
+ */
+public class CommercialDataProcessing {
+
+	public static void main(String[] args) {
+		Person p1 = new Person("Akash","9989565484","500000");
+		
+	}
+
+}

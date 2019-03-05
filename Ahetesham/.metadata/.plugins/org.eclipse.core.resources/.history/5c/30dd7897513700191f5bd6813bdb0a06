@@ -1,0 +1,29 @@
+package com.bridgelabz.programs.ds;
+import com.bridgelabz.programs.utils.DSUtil;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+/**
+ * Purpose : To calculate possible binary search tree for give node
+ * @author Ahetesham
+ * Date : 15/02/2019
+ */
+public class BinarySearchTree {
+	
+	public static void main(String []args)
+	{
+		 int arr [] = new int[10];
+		 System.out.println("Enter the number of nodes:=");
+		 int n = FunctionalUtil.singleIntegerInput();
+		 System.out.println("Enter the "+n+" values for nodes:=");
+		 for(int i=0;i<n;i++)
+		 {
+			 arr[i] = FunctionalUtil.singleIntegerInput();
+		 }
+		 for(int i=0;i<n;i++)
+		 {
+			 int count = DSUtil.calBST(n);
+			 System.out.println(count);
+		 }	 
+	}
+} 
+
+

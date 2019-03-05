@@ -1,0 +1,163 @@
+package com.bridgelabz.programs.algo;
+
+import com.bridgelabz.programs.util.FunctionalUtil;
+
+public class SearchingAndSorting
+{
+			
+	private static final String String = null;
+
+	public static void main(String[] args) {
+		 
+					/*Searching For String*/
+		
+		String[] names = new String[] {"man","women","animals","birds"};
+		System.out.println("/*Binary Search For String*/");
+		System.out.println();
+		System.out.println("Enter String element to search:=");
+		System.out.println();
+		String stringElement = FunctionalUtil.singleStringInput();
+		Long startStringSearch = FunctionalUtil.start();
+		/*Bubble Sort Function*/
+		names = FunctionalUtil.bubbleSort(names);
+		/*Binary Search Function*/
+	    FunctionalUtil.searchString(names,stringElement);
+	    Long stopStringSearch = FunctionalUtil.stop();
+	    Long timeStringSearch = FunctionalUtil.timeEllapse(startStringSearch, stopStringSearch);
+	    System.out.println();
+	    System.out.println("Time Taken by String Searching is:="+timeStringSearch+" Nano Seconds");
+	    
+	    
+	    			/*Searching For Integer*/
+	    
+	    String []integerSearchArray = new String[] {"2","1","9","6","3","0"};
+	    System.out.println();
+	    System.out.println("/*Binary Search For Integer*/");
+	    System.out.println();
+	    System.out.println("Enter Integer element to search:=");
+		String integerElement = FunctionalUtil.singleStringInput();
+		Long startIntegerSearch = FunctionalUtil.start();
+		/*Bubble Sort Function*/
+		integerSearchArray = FunctionalUtil.bubbleSort(integerSearchArray);
+		/*Binary Search Function*/
+	    FunctionalUtil.searchString(integerSearchArray,integerElement);
+	    Long stopIntegerSearch = FunctionalUtil.stop();
+	    Long timeIntegerSearch = FunctionalUtil.timeEllapse(startIntegerSearch, stopIntegerSearch);
+	    System.out.println();
+	    System.out.println("Time Taken by Integer Searching is:="+timeIntegerSearch+" Nano Seconds");
+	    
+	    					/*Bubble Sort For Integer*/
+	    
+	    String []integerSortArray = new String[] {"8","9","2","0","7","6"};
+	    System.out.println();
+	    System.out.println("/*Bubble sort for Integer*/");
+	    System.out.println();
+	    System.out.println("Before Sorting:=");
+	    for(int i=0;i<integerSortArray.length;i++)
+	    {
+	    	System.out.print(" "+integerSortArray[i]);
+	    	
+	    }
+	    Long startIntegerSort = FunctionalUtil.start();
+	    /*Bubble Sort Function*/
+	    integerSortArray = FunctionalUtil.bubbleSort(integerSortArray);
+	    Long stopIntegerSort  = FunctionalUtil.stop();
+	    Long timeIntegerSort  = FunctionalUtil.timeEllapse(startIntegerSort , stopIntegerSort );
+	    System.out.println();
+	    System.out.println("Time Taken by Integer Sorting is:="+timeIntegerSort +" Nano Seconds");
+	    System.out.println();
+	    System.out.println("After Sorting:=");
+	    for(int i=0;i<integerSortArray.length;i++)
+	    {
+	    	System.out.print(" "+integerSortArray[i]);
+	    	
+	    }
+	    System.out.println();
+	    
+	    			/*Bubble Sort For String*/
+	    
+	    String []stringSortArray = new String[] {"man","women","animals","birds"};
+	    System.out.println();
+	    System.out.println("/*Bubble sort for String*/");
+	    System.out.println();
+	    System.out.println("Before Bubble Sorting:=");
+	    for(int i=0;i<stringSortArray.length;i++)
+	    {
+	    	System.out.print(" "+stringSortArray[i]);
+	    	
+	    }
+	    Long startStringSort = FunctionalUtil.start();
+	    /*Bubble Sort Function*/
+	    stringSortArray = FunctionalUtil.bubbleSort(stringSortArray);
+	    Long stopStringSort  = FunctionalUtil.stop();
+	    Long timeStringSort  = FunctionalUtil.timeEllapse(startStringSort , stopStringSort );
+	    System.out.println();
+	    System.out.println("Time Taken by Integer Bubble Sorting is:="+timeStringSort +" Nano Seconds");
+	    System.out.println();
+	    System.out.println("After Bubble Sorting:=");
+	    for(int i=0;i<stringSortArray.length;i++)
+	    {
+	    	System.out.print(" "+stringSortArray[i]);
+	    	
+	    }
+	    
+	    /*Insertion Sort For String*/
+	    
+	    String []stringInsertionSortArray = new String[] {"man","women","animals","birds"};
+	    System.out.println();
+	    System.out.println("/*Insertion sort for String*/");
+	    System.out.println();
+	    System.out.println("Before Insertion Sorting:=");
+	    for(int i=0;i<stringInsertionSortArray.length;i++)
+	    {
+	    	System.out.print(" "+stringInsertionSortArray[i]);
+	    	
+	    }
+	    Long startStringInsertionSort = FunctionalUtil.start();
+	    /*Insertion Sort Function*/
+	    stringInsertionSortArray = FunctionalUtil.insertionSort(stringInsertionSortArray);
+	    Long stopStringInsertionSort  = FunctionalUtil.stop();
+	    Long timeStringInsertionSort  = FunctionalUtil.timeEllapse(startStringInsertionSort , stopStringInsertionSort );
+	    System.out.println();
+	    System.out.println("Time Taken by String Insertion Sorting is:="+timeStringInsertionSort +" Nano Seconds");
+	    System.out.println();
+	    System.out.println("After Insertion Sorting:=");
+	    for(int i=0;i<stringSortArray.length;i++)
+	    {
+	    	System.out.print(" "+stringInsertionSortArray[i]);
+	    	
+	    }
+	    
+	    		/*Insertion Sorting For Integer*/
+	    
+	    String []integerInsertionSortArray = new String[] {"7","8","0","1","3","2"};
+	    System.out.println();
+	    System.out.println("/*Insertion sort for String*/");
+	    System.out.println();
+	    System.out.println("Before Insertion Sorting:=");
+	    for(int i=0;i<integerSortArray.length;i++)
+	    {
+	    	System.out.print(" "+integerInsertionSortArray[i]);
+	    	
+	    }
+	    Long startIntegerInsertionSort = FunctionalUtil.start();
+	    System.out.println();
+	    /*Insertion Sort Function*/
+	    integerInsertionSortArray = FunctionalUtil.insertionSort(integerInsertionSortArray);
+	    Long stopIntegerInsertionSort  = FunctionalUtil.stop();
+	    Long timeIntegerInsertionSort  = FunctionalUtil.timeEllapse(startIntegerInsertionSort , stopIntegerInsertionSort );
+	    System.out.println();
+	    System.out.println("Time Taken by String Insertion Sorting is:="+timeIntegerInsertionSort +" Nano Seconds");
+	    System.out.println();
+	    System.out.println("After Insertion Sorting:=");
+	    for(int i=0;i<integerSortArray.length;i++)
+	    {
+	    	System.out.print(" "+integerInsertionSortArray[i]);
+	    	
+	    }
+	}
+
+}
+
+
+

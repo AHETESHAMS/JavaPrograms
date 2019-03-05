@@ -1,0 +1,66 @@
+package com.bridgelabz.programs.oops;
+
+import com.bridgelabz.programs.ds.LinkedList;
+
+public class DeckOfCardWithQueue {
+	public static void main(String []args)
+	{
+		int cnt=1;
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		LinkedList queueListNumbers = new LinkedList();
+		LinkedList queueListSuits = new LinkedList();
+		LinkedList queueListPlayers = new LinkedList();
+		do
+		{
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =(ObjectOrientedUtility.randomValueGenerator(13))+1;
+			int player =(ObjectOrientedUtility.randomValueGenerator(3))+1;
+			if(queueListNumbers.head==null)
+			{
+				queueListNumbers.insertAtLast(Integer.toString(cardNumber));
+				queueListSuits.insertAtLast(suit[suitIndex]);
+				queueListPlayers.insertAtLast(Integer.toString(player));
+				cnt++;
+				System.out.println("cnt:"+cnt);
+			}
+			else
+			{	for(int i=1;i<cnt;i++)
+				{
+					if(queueListNumbers.getElementAtPosition(i).equals(cardNumber)&&queueListSuits.getElementAtPosition(i).equals(suit[suitIndex]))
+					{
+						cardNumber = (ObjectOrientedUtility.randomValueGenerator(13))+1;
+						break;
+					}
+				}
+	
+				queueListNumbers.insertAtLast(Integer.toString(cardNumber));
+				queueListSuits.insertAtLast(suit[suitIndex]);
+				queueListPlayers.insertAtLast(Integer.toString(player));
+				cnt++;
+				System.out.println("cnt:"+cnt);
+				}	
+//			queueListNumbers.show();
+			
+		}while(cnt<=36);
+		//queueListNumbers.sortList();
+		for(int i=0;i<36;i++)
+		{
+			String eachNumber = queueListNumbers.deleteAtFirst(); 
+			String eachSuit = queueListSuits.deleteAtFirst();
+			String eachPlayer = queueListPlayers.deleteAtFirst();
+			if(eachNumber.equals(13))
+			{
+				eachNumber = "King";
+			}
+			else if(eachNumber.equals(12))
+			{
+				eachNumber = "Jack";
+			}
+			else if(eachNumber.equals(11))
+			{
+				eachNumber = "Quin";
+			}
+			System.out.println("Player"+eachPlayer+" got "+eachNumber+" of "+eachSuit);
+		}
+	}
+}

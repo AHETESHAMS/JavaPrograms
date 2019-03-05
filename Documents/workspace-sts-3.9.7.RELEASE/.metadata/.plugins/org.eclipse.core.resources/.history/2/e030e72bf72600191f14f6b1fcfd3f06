@@ -1,0 +1,5 @@
+package com.bridgelabz.springbootstarter.topic;
+
+public class TopicService {
+
+}

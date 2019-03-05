@@ -1,0 +1,19 @@
+package ObjectOrientedPrograms;
+
+public class RegularExpression {
+
+	public static void main(String[] args) {
+		String msg = "I am <<name>> my full name is <<full name>>"+"my mobile number is 91-xxxxxxxxxx"
+				+ "date is xx/xx/xx";
+		String patt1 = "<+.{4}>+";
+		String patt2 = "<+.{9}>+";
+		String patt3 = "x{10}";
+		String patt4 = "..\\w..\\w..";
+		msg = msg.replaceAll(patt1,"Ahetesham");
+		msg = msg.replaceAll(patt2,"Ahetesham Shaikh");
+		msg = msg.replaceAll(patt3,"9623886949");
+		msg = msg.replaceAll(patt1,"22/02/2019");
+		System.out.println("Mssage is:="+msg);
+	}
+
+}

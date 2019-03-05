@@ -1,0 +1,14 @@
+package com.bridgelabz.programs.algo;
+
+import com.bridgelabz.programs.utils.FunctionalUtil;
+
+public class MonthlyPayment {
+	public static void main(String []args)
+	{
+		System.out.println("Enter Principal ,Year and Rate");
+		double p = FunctionalUtil.singleIntegerInput();
+		double y = FunctionalUtil.singleIntegerInput();
+		double r = FunctionalUtil.singleIntegerInput();
+		System.out.println("mothly payment is:" + Util.monthlyPayment(p, y, r));
+	}
+}

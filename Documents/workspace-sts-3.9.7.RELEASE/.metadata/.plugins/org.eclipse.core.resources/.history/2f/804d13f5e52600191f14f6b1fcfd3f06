@@ -1,0 +1,5 @@
+package com.bridgelabz.springbootstarter.hello;
+
+public class HelloController {
+
+}

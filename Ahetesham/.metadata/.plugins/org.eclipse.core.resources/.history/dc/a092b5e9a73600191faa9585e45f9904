@@ -1,0 +1,22 @@
+package ObjectOrientedPrograms;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DeckOfCards {
+
+	public static void main(String[] args) {
+		
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		Map<Integer,String> map =new HashMap(); 
+		do
+		{	
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =ObjectOrientedUtility.randomValueGenerator(52);
+			System.out.println(""+suit[suitIndex]);
+			System.out.println(""+cardNumber);
+		}while(true);
+
+	}
+
+}

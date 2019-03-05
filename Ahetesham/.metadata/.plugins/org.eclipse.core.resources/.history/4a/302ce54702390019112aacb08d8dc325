@@ -1,0 +1,46 @@
+package com.oops.model;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.bridgelabz.programs.utils.JsonUtil;
+/**
+ * Purpose : Creating program to process the data using Json
+ * @author Ahetesham
+ * Date : 25/02/2019
+ */
+public class CommercialDataProcessing {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+		Person person1 = new Person();
+		Companies c1 = new Companies();
+		Object obj = new JSONParser().parse(new FileReader("People.json"));
+		JSONObject jo = (JSONObject) obj;
+		JSONArray people= (JSONArray) jo.get("Person");
+		JSONObject o = (JSONObject) people.get(0);
+		String name = (String) o.get("name");
+		String no = (String) o.get("phNumber");
+		String cash = (String) o.get("cash");
+		person1.setName(name);
+		person1.setPhNumber(no);
+		person1.setCash(cash);
+		String jsonPerson = JsonUtil.convertJavaToJson(person1);
+		System.out.println(jsonPerson);
+		c1.setName("Google");
+		c1.setSharePrtice("1500");
+		c1.setShareStock("250");
+		String jsonCompanies = JsonUtil.convertJavaToJson(c1);
+		System.out.println(jsonCompanies);
+		
+		Person p1 = JsonUtil.convertJsonToJava(jsonPerson,Person.class);
+		System.out.println("Name:="+p1.name+" no:="+p1.phNumber+" cash:="+p1.cash);
+		
+	}
+
+}

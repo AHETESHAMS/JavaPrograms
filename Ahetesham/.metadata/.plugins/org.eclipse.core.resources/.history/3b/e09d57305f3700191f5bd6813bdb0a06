@@ -1,0 +1,36 @@
+package com.bridgelabz.programs.oops;
+
+import com.bridgelabz.programs.ds.LinkedList;
+
+public class DeckOfCardWithQueue {
+	public static void main(String []args)
+	{
+		int cnt=0;
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		LinkedList queueListNumbers = new LinkedList();
+		LinkedList queueListSuits = new LinkedList();
+		do
+		{
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =ObjectOrientedUtility.randomValueGenerator(51);
+			boolean found = queueListNumbers.search(Integer.toString(cardNumber));
+			if(found)
+			{
+				cardNumber =ObjectOrientedUtility.randomValueGenerator(51);
+			}
+			else
+			{
+				
+				if(cnt>=36)
+					break;
+				queueListNumbers.insertAtLast(Integer.toString(cardNumber));
+				queueListSuits.insertAtLast(suit[suitIndex]);
+				cnt++;
+			}
+			if(cnt>=36)
+				break;
+			
+		}while(true);
+		queueListNumbers.show(); 
+	}
+}

@@ -1,0 +1,23 @@
+package com.bridgelabz.programs.utils;
+import org.codehaus.jackson.map.ObjectMapper;
+public class JsonUtil {
+
+	private static ObjectMapper mapper;
+		static 
+		{
+			mapper = new ObjectMapper();
+		}
+		public static String convertJavaToJson(Object object)
+		{
+			String jsonResult = "";
+			try
+			{
+				jsonResult = mapper.writeValueAsString(object);
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}
+			return jsonResult;
+		}
+}

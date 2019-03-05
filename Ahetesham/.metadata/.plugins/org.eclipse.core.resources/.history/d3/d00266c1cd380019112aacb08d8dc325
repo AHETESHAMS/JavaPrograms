@@ -1,0 +1,40 @@
+/**
+ * Purpose : TO create unordered list and store to a file
+ * Author : Ahetesham
+ * Date : 10/02/2019
+ */
+package com.bridgelabz.programs.ds;
+import com.bridgelabz.programs.utils.DSUtil;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+public class UnOrderesList {
+	
+	public static void main(String[] args) {
+		String element;
+		//Creation of Linked List Object
+		LinkedList wordList = new LinkedList();
+		String numbers[] = null;
+		//Calling to readFile function to read a file
+		numbers = DSUtil.readFile(numbers);
+		for(String item : numbers)
+		{
+			wordList.insertAtLast(item);
+		}
+		//Calling to show function to display Linked List
+		wordList.show();
+		System.out.println("Enter a Number:=");
+		//calling to function to get an input from user
+		element = FunctionalUtil.singleStringInput();
+		//calling to search function to search element in Linked List
+		boolean found = FunctionalUtil.searchString(numbers, element);
+		if(found)
+			wordList.delete(element);
+		else
+		{
+			wordList.insertAtLast(element);
+		}
+		//Calling to show function to display Linked List
+		wordList.show();
+		//Calling to writeFile function to write a file a file
+		wordList = DSUtil.writeFile(wordList);
+	}
+}

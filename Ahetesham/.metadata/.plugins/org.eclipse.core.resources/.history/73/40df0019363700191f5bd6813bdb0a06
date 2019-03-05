@@ -1,0 +1,59 @@
+package com.bridgelabz.programs.oops;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class DeckOfCards {
+
+	public static void main(String[] args) {
+		int i=0;
+		String suit[] = new String[] {"heart","spade","diamond","clubs"};
+		Map<Integer,String> map =new HashMap(); 
+		int cnt=0;
+		do
+		{	
+			int suitIndex = ObjectOrientedUtility.randomValueGenerator(suit.length);
+			int cardNumber =ObjectOrientedUtility.randomValueGenerator(51);
+			if(map.get(cardNumber) == null)
+			{
+				i++;
+				if(i>4)
+					i=1;
+				map.put(cardNumber, suit[suitIndex]);
+				if(cardNumber == 13)
+					System.out.println("Player"+i+" Got King");
+				else if(cardNumber == 11)
+					System.out.println("Player"+i+" Got Joker");
+				else if(cardNumber == 12)
+					System.out.println("Player"+i+" Got Quin");
+				else
+					System.out.println("Player"+i+" got "+cardNumber+" of "+suit[suitIndex]);
+				cnt++;
+			}
+			else if(map.get(cardNumber).equals(suit[suitIndex]))
+			{
+				cardNumber =ObjectOrientedUtility.randomValueGenerator(52);
+			}
+			else
+			{
+				i++;
+				if(i>4)
+					i=1;
+				map.put(cardNumber, suit[suitIndex]);
+				if(cardNumber == 13)
+					System.out.println("Player"+i+" Got King");
+				else if(cardNumber == 11)
+					System.out.println("Player"+i+" Got Joker");
+				else if(cardNumber == 12)
+					System.out.println("Player"+i+" Got Quin");
+				else
+					System.out.println("Player"+i+" got "+cardNumber+" of "+suit[suitIndex])
+				cnt++;
+			}
+			if(cnt>=36)
+				break;
+		}while(true);
+	}
+
+}

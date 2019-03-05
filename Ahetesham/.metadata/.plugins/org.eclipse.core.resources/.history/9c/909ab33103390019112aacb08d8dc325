@@ -1,0 +1,68 @@
+package com.oops.model;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+import com.bridgelabz.programs.utils.JsonUtil;
+/**
+ * Purpose : Creating program to process the data using Json
+ * @author Ahetesham
+ * Date : 25/02/2019
+ */
+public class CommercialDataProcessing {
+
+	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
+		Person person1 = new Person();
+		Companies c1 = new Companies();
+		//Parsing Json file
+		Object obj1 = new JSONParser().parse(new FileReader("People.json"));
+		JSONObject jo1 = (JSONObject) obj1;
+		JSONArray people= (JSONArray) jo1.get("Person");
+		JSONObject o1 = (JSONObject) people.get(0);
+		Object obj2 = new JSONParser().parse(new FileReader("Companies.json"));
+		JSONObject jo2= (JSONObject) obj2;
+		JSONArray companies= (JSONArray) jo2.get("companies");
+		JSONObject o2 = (JSONObject) companies.get(0);
+		//Getting objects form file
+		String personName = (String) o1.get("name");
+		String no = (String) o1.get("phNumber");
+		String cash = (String) o1.get("cash");
+		String comapanyName = (String) o1.get("name");
+		String stock = (String) o1.get("stock");
+		String sharePrice = (String) o1.get("price");
+		//Creating Objects of Person
+		person1.setName(personName);
+		person1.setPhNumber(no);
+		person1.setCash(cash);
+		c1.setName(comapanyName );
+		c1.setSharePrtice(sharePrice);
+		c1.setShareStock(stock);
+		System.out.println("1.Buy Shares");
+		System.out.println("2.Sell Shares");
+		System.out.println("Enter the Choice:=");
+		int ch = FunctionalUtil.singleIntegerInput();
+		if(ch == 1)
+		{
+			JsonUtil.buyShares(personCashAmount, priceOfShares, numberOfShares)
+		}
+		//Converting java object to json string
+		String jsonPerson = JsonUtil.convertJavaToJson(person1);
+		System.out.println(jsonPerson);
+		c1.setName("Google");
+		c1.setSharePrtice("1500");
+		c1.setShareStock("250");
+		String jsonCompanies = JsonUtil.convertJavaToJson(c1);
+		System.out.println(jsonCompanies);
+		//Converting Json file to java object
+		Person p1 = JsonUtil.convertJsonToJava(jsonPerson,Person.class);
+		System.out.println("Name:="+p1.name+" no:="+p1.phNumber+" cash:="+p1.cash);
+		
+	}
+
+}
+//Has to create json file for companies to pass the valu of price of share

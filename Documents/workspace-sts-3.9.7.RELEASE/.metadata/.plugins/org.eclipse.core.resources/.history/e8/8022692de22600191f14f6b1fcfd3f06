@@ -1,0 +1,10 @@
+package com.bridgelabz.springbootstarter;
+
+public class SpringApiApp {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

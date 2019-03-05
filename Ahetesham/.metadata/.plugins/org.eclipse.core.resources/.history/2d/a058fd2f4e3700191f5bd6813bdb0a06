@@ -1,0 +1,41 @@
+package com.bridgelabz.programs.ds;
+import com.bridgelabz.programs.utils.DSUtil;
+import com.bridgelabz.programs.utils.FunctionalUtil;
+public class OrderedList {
+/**
+ * Purpose : TO create an ordered list and store to a file
+ * Author : Ahetesham
+ * Date : 10/02/2019
+*/
+	public static void main(String[] args) {
+		String element;
+		//Creation of Linked List Object
+		LinkedList wordList = new LinkedList();
+		String word[] = null;
+		//Calling to readFile function to read a file
+		word = DSUtil.readFile(word);
+		// Using for each loop to add item in linked list
+		for(String item : word)
+		{
+			wordList.insertAtLast(item);
+		}
+		//Calling to show function to display Linked List
+		wordList.show();
+		System.out.println("Enter a Word:=");
+		//calling to function to get an input from user
+		element = FunctionalUtil.singleStringInput();
+		//calling to search function to search element in Linked List
+		boolean found = FunctionalUtil.searchString(word, element);
+		if(found)
+			wordList.delete(element);
+		else
+		{
+			wordList.insertAtLast(element);
+		}
+		wordList.sortList();
+		//Calling to show function to display Linked List
+		wordList.show();
+		//Calling to writeFile function to write a file a file
+		wordList = DSUtil.writeFile(wordList);
+	}
+}

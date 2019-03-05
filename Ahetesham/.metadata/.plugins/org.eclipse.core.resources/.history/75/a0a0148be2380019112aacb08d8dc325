@@ -1,0 +1,28 @@
+package com.bridgelabz.programs.oops;
+
+import java.io.Serializable;
+
+class Person implements Serializable
+{
+	String name,phNumber,cash;
+	public String setName(String name)
+	{
+		
+	}
+}
+/**
+ * Purpose : Creating program to process the data using Json
+ * @author Ahetesham
+ * Date : 25/02/2019
+ */
+public class CommercialDataProcessing {
+
+	public static void main(String[] args) {
+		Person p1 = new Person();
+		p1.setName("Akash");
+		p1.setphNumber(9989698478);
+		p1.setcash("500000");
+		
+	}
+
+}

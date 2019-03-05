@@ -1,0 +1,19 @@
+package com.bridgelabz.datastructure;
+
+import com.BridgeLabz.FunctionalPrograms.Utility;
+
+public class Prime2D {
+
+	public static void main(String[] args) {
+		int num = 3;
+		int cnt=0;
+		while(num<=100)
+		{
+			cnt = Utility.checkPrime(num);	
+			if(cnt==0)
+				System.out.println(num+" is Prime Number!");
+			num++;
+		}
+
+	}
+}
