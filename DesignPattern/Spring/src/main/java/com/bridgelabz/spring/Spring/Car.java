@@ -3,6 +3,6 @@ public class Car implements Vehicle
 {
 	public void drive()
 	{
-		System.out.println("o gaddi chaal rahi si!");
+		System.out.println("o Car chaal rahi si!");
 	}
 }
