@@ -22,6 +22,7 @@ import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
+import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 import com.bridegelabz.fundoo.user.services.UserService;
@@ -39,7 +40,7 @@ public class LoginRestController
 	@Autowired
 	UserRepository userrepository;
 	@PostMapping("/saveuser")
-	public ResponseEntity<Response>  saveUser(@RequestBody UserDto userDto) throws IllegalArgumentException, UnsupportedEncodingException
+	public ResponseEntity<Response>  saveUser(@RequestBody UserDto userDto) throws IllegalArgumentException, UnsupportedEncodingException, RegistrationExceptions
 	{
 		Response response = userService.saveMyUser(userDto); 
 		return new ResponseEntity<Response>(response, HttpStatus.OK);

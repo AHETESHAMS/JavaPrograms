@@ -1,10 +1,8 @@
 package com.bridegelabz.fundoo.notes.service;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,31 +25,189 @@ public class NoteService
 	@Autowired
 	private UserRepository userRepositpory;
 	
-	public Response createNote(NotesDto noteDto, String token) throws UnsupportedEncodingException 
+	public Response createNote(NotesDto noteDto, String token) throws Exception 
 	{
-		if(noteDto.getTitle()!=null || noteDto.getDescription()!=null)
+		if(noteDto.getTitle().isEmpty() || noteDto.getDescription().isEmpty())
+			throw new Exception("User does not exist");
+		
+		Notes notes = modelMapper.map(noteDto, Notes.class);
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
 		{
-			Notes notes = modelMapper.map(noteDto, Notes.class);
-			int id = UserToken.tokenVerify(token);
-			Optional<User> user = userRepositpory.findById(id);
-			if(user.isPresent())
+			notes.setUser(user.get());
+			notes.setCreatedDateAndTime(LocalDateTime.now());
+			noteRepository.save(notes);
+			return StatusHelper.statusInfo("Note Created", 10);
+		}	
+		else
+		{
+			return StatusHelper.statusInfo("User not available", 20);
+		}
+	}
+	public Response updateNote(NotesDto noteDto, String token, int noteId) throws Exception
+	{
+		if(noteDto.getTitle().isEmpty() && noteDto.getDescription().isEmpty())
+			throw new Exception("Title and Description is empty");
+		int userId = UserToken.tokenVerify(token);
+	    Optional <User> user = userRepositpory.findById(userId); 
+	    if(user.isPresent())
+	    {
+	    	Optional <Notes> notes = noteRepository.findById(noteId);
+	    	int existingUserId = notes.get().getUser().getId();
+	    	if(userId == existingUserId)
+	    	{
+	    		notes.get().setCreatedDateAndTime(LocalDateTime.now());
+	    		notes.get().setTitle(noteDto.getTitle());
+	    		notes.get().setDescription(noteDto.getDescription());
+				noteRepository.save(notes.get());
+	    	}
+	    		
+	    }
+	    else
+	    {
+	    	throw new Exception("User does not exist");
+	    }
+	    return StatusHelper.statusInfo("Note Updated", 30);
+	}
+	public Response deleteNote(String token, int noteId) throws Exception
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional<Notes> notes = noteRepository.findById(noteId);
+			System.out.println(notes.get().isTrash());
+			if(notes.get().isTrash())
 			{
-				notes.setUser(user.get());
-				notes.setCreatedDateAndTime(LocalDateTime.now());
-				noteRepository.save(notes);
-				return StatusHelper.statusInfo("Note Created", 10);
-			}	
+		    	throw new Exception("Its Alrady deleted");
+			}
 			else
 			{
-				return StatusHelper.statusInfo("User not available", 20);
+				notes.get().setTrash(true);
+			}
+			System.out.println(notes.get().isTrash());
+			return StatusHelper.statusInfo("Note deleted", 93);
+		}
+		else
+		{
+			throw new Exception("User Does not Exist");
+		}
+		
+	}
+	public Response deleteNotePermanently(String token, int noteId) throws Exception 
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional<Notes> notes = noteRepository.findById(noteId);
+			if(notes.isPresent())
+			{
+				if(notes.get().isTrash())
+				{
+					noteRepository.delete(notes.get());
+				}	
+				return StatusHelper.statusInfo("Note deleted Permanently", 40);
+			}
+			else
+			{
+				throw new Exception("Note Does Not Exist!");
+			}
+			
+		}
+		else
+		{
+			throw new Exception("User Does Not Exist!");
+		}
+		
+	}
+	public Response pin(String token, int noteId) throws Exception
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional<Notes> notes = noteRepository.findById(noteId);
+			if(notes.get().isPin())
+			{
+				notes.get().setPin(false);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("UnPined", 50);
+			}
+			else
+			{
+				notes.get().setPin(true);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("Pined", 60);
+			}
+		}
+	else
+	{
+		throw new Exception("User Doesnt Exist");
+
+	}
+  }		
+	public Response archive(String token, int noteId) throws Exception
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional<Notes> notes = noteRepository.findById(noteId);
+			if(notes.get().isArchive())
+			{
+				notes.get().setArchive(false);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("UnArchived", 70);
+			}
+			else
+			{
+				notes.get().setArchive(true);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("Archived", 80);
 			}
 		}
 		else
 		{
-			return StatusHelper.statusInfo("Please enter at least one parameter!", 30);
+			throw new Exception("User Doesnt Exist");
+
 		}
 		
 	}
-	
-	
+	public Response Trash(String token, int noteId) throws Exception
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional<Notes> notes = noteRepository.findById(noteId);
+			if(notes.get().isTrash())
+			{
+				notes.get().setTrash(false);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("UnTrashed", 90);
+			}
+			else
+			{
+				notes.get().setTrash(true);
+				notes.get().setModefiedDateTime(LocalDateTime.now());
+				noteRepository.save(notes.get());
+				return StatusHelper.statusInfo("Trashed", 91);
+			}
+		}
+		else
+		{
+			throw new Exception("User Doesnt Exist");
+
+		}
+	}
 }
+	
+	
+

@@ -97,19 +97,13 @@ public class User
 		this.modifiedDate = modifiedDate;
 	}
 
-//	public List<Notes> getNotes() {
-//		return notes;
-//	}
-//
-//	public void setNotes(List<Notes> notes) {
-//		this.notes = notes;
-//	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
+				+ password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate + ", modifiedDate="
+				+ modifiedDate + "]";
+	}
 
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
-//				+ password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate + ", modifiedDate="
-//				+ modifiedDate + ", notes=" + notes + "]";
-//	}
+
 	
 }

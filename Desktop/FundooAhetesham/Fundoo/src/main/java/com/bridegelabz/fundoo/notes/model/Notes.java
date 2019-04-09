@@ -22,15 +22,14 @@ public class Notes
 	private int id;
 	private String title;
 	private String description;
-	private boolean isPind;
-	private boolean isArchive;
-	private boolean isTrash;
+	private boolean isPin=false;
+	private boolean isArchive=false;
+	private boolean isTrash=false;
 	private LocalDateTime createdDateAndTime;
 	private LocalDateTime modefiedDateTime;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
 	public LocalDateTime getModefiedDateTime() {
 		return modefiedDateTime;
 	}
@@ -61,11 +60,12 @@ public class Notes
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public boolean isPind() {
-		return isPind;
+	
+	public boolean isPin() {
+		return isPin;
 	}
-	public void setPind(boolean isPind) {
-		this.isPind = isPind;
+	public void setPin(boolean isPin) {
+		this.isPin = isPin;
 	}
 	public boolean isArchive() {
 		return isArchive;
@@ -84,6 +84,12 @@ public class Notes
 	}
 	public void setCreatedDateAndTime(LocalDateTime createdDateAndTime) {
 		this.createdDateAndTime = createdDateAndTime;
+	}
+	@Override
+	public String toString() {
+		return "Notes [id=" + id + ", title=" + title + ", description=" + description + ", isPin=" + isPin
+				+ ", isArchive=" + isArchive + ", isTrash=" + isTrash + ", createdDateAndTime=" + createdDateAndTime
+				+ ", modefiedDateTime=" + modefiedDateTime + ", user=" + user + "]";
 	}
 
 	

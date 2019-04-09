@@ -8,10 +8,13 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.security.auth.login.LoginException;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
+import com.bridegelabz.fundoo.user.exception.LoginExceptions;
+import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 /**
@@ -28,6 +33,7 @@ import com.bridegelabz.fundoo.user.repository.UserRepository;
  */
 @Service
 @Transactional
+@PropertySource("classpath:message.properties")
 public class UserService implements IUserService
 {
 	@Autowired
@@ -42,10 +48,15 @@ public class UserService implements IUserService
 	private Response response = null;
 	@Autowired
 	private ResponseToken responseToken = null;
+	@Autowired
+	private Environment environment;
 	/**
 	 * purpose: To Register and save user
+	 * @throws RegistrationExceptions 
+	 * @throws UnsupportedEncodingException 
+	 * @throws IllegalArgumentException 
 	 */
-	public Response saveMyUser(UserDto userDto) throws IllegalArgumentException, UnsupportedEncodingException
+	public Response saveMyUser(UserDto userDto) throws RegistrationExceptions, IllegalArgumentException, UnsupportedEncodingException
 	{
 		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));  
 		User user = modelMapper.map(userDto, User.class);
@@ -53,7 +64,7 @@ public class UserService implements IUserService
 		if(userExist.isPresent())
 		{
 			System.out.println("User alrady Exist");
-			return StatusHelper.statusInfo("User Alrady Exist", 200);
+			throw new RegistrationExceptions(environment.getProperty("status.register.userAlreadyExist"), Integer.parseInt(environment.getProperty("status.token.ErrorCode")));
 		}
 		else
 		{
@@ -63,7 +74,7 @@ public class UserService implements IUserService
 			String sub="Verification";
 			String url="http://localhost:8080/user/"+UserToken.generateToken(user.getId());
 			emailService.sendMail(to,sub,url);
-			return StatusHelper.statusInfo("Email Sent", 100);
+			return StatusHelper.statusInfo(environment.getProperty("status.register.mailSent"), Integer.parseInt(environment.getProperty("status.register.mailSentCode")));
 		}	
 	}
 	/**
@@ -74,10 +85,12 @@ public class UserService implements IUserService
 		int id = UserToken.tokenVerify(token);
 		System.out.println("id:"+id);
 		Optional<User> user = userRepository.findById(id);
+		System.out.println("User : "+ user.get().toString());
 		user.get().setVerified(true);
 		user.get().setModifiedDate(LocalDate.now());
+		System.out.println("User : "+ user.get().toString());
 		userRepository.save(user.get());
-		return response = StatusHelper.statusInfo("User Saved", 100);
+		return StatusHelper.statusInfo(environment.getProperty("status.register.successRegistered"), Integer.parseInt(environment.getProperty("status.register.successCode")));
 	}
 	/**
 	 * Purpose: To Change the password of of Exiting User 
@@ -91,11 +104,11 @@ public class UserService implements IUserService
 		{
 			String url = "http://localhost:8080/setPassword/"+UserToken.generateToken(user.get().getId());
 			emailService.sendMail(to, subject, url);
-			return response = StatusHelper.statusInfo("Email Sent", 600);
+			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
 		}
 		else
 		{
-			return response = StatusHelper.statusInfo("User does not Exist", 700);
+			throw new RegistrationExceptions(environment.getProperty("status.userNotExist"), Integer.parseInt(environment.getProperty("status.token.ErrorCode")));
 		}
 		
 	}
@@ -110,11 +123,11 @@ public class UserService implements IUserService
 		{
 			user.get().setPassword(passwordEncoder.encode(newPassword));
 			userRepository.save(user.get());	
-			return response = StatusHelper.statusInfo("New Password Set", 800);
+			return response = StatusHelper.statusInfo(environment.getProperty("status.setPassword"), Integer.parseInt(environment.getProperty("status.register.successCode")));//New Password Set
 		}
 		else
 		{
-			return response = StatusHelper.statusInfo("User Does not Exist", 900);
+			throw new RegistrationExceptions(environment.getProperty("status.userNotExist"), Integer.parseInt(environment.getProperty("status.token.ErrorCode")));
 		}
 	}
 	/**
@@ -122,29 +135,29 @@ public class UserService implements IUserService
 	 */
 	public ResponseToken loginService(LoginDto loginDto)
 	{
+		String token=null;
 		Optional<User> user = userRepository.findByEmailId(loginDto.getEmailId());
 		int id = user.get().getId();
 		if(user.isPresent())
 		{
 			if(passwordEncoder.matches(loginDto.getPassword(), user.get().getPassword()))
 			{
-				String token=null;
 				try {
 					token = UserToken.generateToken(id);
 				} catch (IllegalArgumentException | UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return StatusHelper.tokenStatusinfo("Login Successful", 300, token);
+				return StatusHelper.tokenStatusinfo(environment.getProperty("status.login.success"), Integer.parseInt(environment.getProperty("status.login.successCode")), token);
 			}
 			else
 			{
-				return StatusHelper.tokenStatusinfo("Invalid Password", 400, null);
+				throw new LoginExceptions(environment.getProperty("status.login.falure"), token, Integer.parseInt(environment.getProperty("status.login.falureCode")));
 			}
 		}
 		else
 		{
-			return StatusHelper.tokenStatusinfo("User is not present", 300, null);
+			return StatusHelper.tokenStatusinfo(environment.getProperty("status.userNotExist"),Integer.parseInt(environment.getProperty("status.login.falureCode")),token);
 		}
 	}
 	
