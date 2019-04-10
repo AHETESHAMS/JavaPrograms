@@ -1,15 +1,14 @@
 package com.bridegelabz.fundoo.exceptionHandler;
 
-import javax.security.auth.login.LoginException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.bridegelabz.fundoo.exception.CreateNoteExceptions;
+import com.bridegelabz.fundoo.exception.LoginExceptions;
+import com.bridegelabz.fundoo.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
-import com.bridegelabz.fundoo.user.exception.LoginExceptions;
-import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.util.StatusHelper;
 
 @RestControllerAdvice
@@ -27,5 +26,12 @@ public class ExceptionHandler
 	{
 		ResponseToken responseToken = StatusHelper.tokenStatusinfo(loginExceptions.getMessage(),loginExceptions.getErrorCode(), loginExceptions.getToken());
 		return new ResponseEntity<ResponseToken> (responseToken , HttpStatus.OK);
+	}
+	@org.springframework.web.bind.annotation.ExceptionHandler(value = CreateNoteExceptions.class)
+	public ResponseEntity<Response> createNoteExceptionHandler(CreateNoteExceptions createNoteExceptions)
+	{
+		Response response = StatusHelper.statusInfo(createNoteExceptions.getMessage(), createNoteExceptions.getErrorCode());
+		return new ResponseEntity<Response> (response , HttpStatus.OK);
+		
 	}
 }

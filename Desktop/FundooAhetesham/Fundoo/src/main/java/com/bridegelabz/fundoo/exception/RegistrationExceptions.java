@@ -1,4 +1,4 @@
-package com.bridegelabz.fundoo.user.exception;
+package com.bridegelabz.fundoo.exception;
 
 public class RegistrationExceptions extends RuntimeException
 {

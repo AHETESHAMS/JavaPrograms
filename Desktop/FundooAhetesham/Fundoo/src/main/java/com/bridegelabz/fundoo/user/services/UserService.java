@@ -18,12 +18,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bridegelabz.fundoo.exception.LoginExceptions;
+import com.bridegelabz.fundoo.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
-import com.bridegelabz.fundoo.user.exception.LoginExceptions;
-import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 /**

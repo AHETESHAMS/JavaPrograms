@@ -2,11 +2,11 @@ package com.bridegelabz.fundoo.user.services;
 
 import java.io.UnsupportedEncodingException;
 
+import com.bridegelabz.fundoo.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
-import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 
 public interface IUserService 
 {

@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridegelabz.fundoo.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
-import com.bridegelabz.fundoo.user.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 import com.bridegelabz.fundoo.user.services.UserService;

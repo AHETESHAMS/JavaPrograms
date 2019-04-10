@@ -1,5 +1,7 @@
 package com.bridegelabz.fundoo.notes.service;
+import  org.springframework.core.env.Environment;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -7,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bridegelabz.fundoo.exception.CreateNoteExceptions;
 import com.bridegelabz.fundoo.notes.dto.NotesDto;
 import com.bridegelabz.fundoo.notes.model.Notes;
 import com.bridegelabz.fundoo.notes.repository.NoteRepository;
@@ -24,11 +27,12 @@ public class NoteService
 	private NoteRepository noteRepository;
 	@Autowired
 	private UserRepository userRepositpory;
-	
-	public Response createNote(NotesDto noteDto, String token) throws Exception 
+	@Autowired
+	private Environment environment;
+	public Response createNote(NotesDto noteDto, String token) throws UnsupportedEncodingException
 	{
 		if(noteDto.getTitle().isEmpty() || noteDto.getDescription().isEmpty())
-			throw new Exception("User does not exist");
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 		
 		Notes notes = modelMapper.map(noteDto, Notes.class);
 		int id = UserToken.tokenVerify(token);
@@ -38,17 +42,17 @@ public class NoteService
 			notes.setUser(user.get());
 			notes.setCreatedDateAndTime(LocalDateTime.now());
 			noteRepository.save(notes);
-			return StatusHelper.statusInfo("Note Created", 10);
+			return StatusHelper.statusInfo(environment.getProperty("status.notes.noteCreated"), Integer.parseInt(environment.getProperty("status.notes.success")));
 		}	
 		else
 		{
-			return StatusHelper.statusInfo("User not available", 20);
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 		}
 	}
 	public Response updateNote(NotesDto noteDto, String token, int noteId) throws Exception
 	{
 		if(noteDto.getTitle().isEmpty() && noteDto.getDescription().isEmpty())
-			throw new Exception("Title and Description is empty");
+			throw new CreateNoteExceptions(environment.getProperty("throw new CreateNoteExceptions"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 		int userId = UserToken.tokenVerify(token);
 	    Optional <User> user = userRepositpory.findById(userId); 
 	    if(user.isPresent())
@@ -66,9 +70,9 @@ public class NoteService
 	    }
 	    else
 	    {
-	    	throw new Exception("User does not exist");
+	    	throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 	    }
-	    return StatusHelper.statusInfo("Note Updated", 30);
+	    return StatusHelper.statusInfo(environment.getProperty("status.notes.notesUpdated"), Integer.parseInt(environment.getProperty("status.notes.success")));
 	}
 	public Response deleteNote(String token, int noteId) throws Exception
 	{
@@ -80,18 +84,18 @@ public class NoteService
 			System.out.println(notes.get().isTrash());
 			if(notes.get().isTrash())
 			{
-		    	throw new Exception("Its Alrady deleted");
+		    	throw new CreateNoteExceptions(environment.getProperty("status.notes.alreadyDeleted"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 			}
 			else
 			{
 				notes.get().setTrash(true);
 			}
 			System.out.println(notes.get().isTrash());
-			return StatusHelper.statusInfo("Note deleted", 93);
+			return StatusHelper.statusInfo(environment.getProperty("status.notes.noteDeleted"), Integer.parseInt(environment.getProperty("status.notes.success")));
 		}
 		else
 		{
-			throw new Exception("User Does not Exist");
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 		}
 		
 	}
@@ -108,17 +112,17 @@ public class NoteService
 				{
 					noteRepository.delete(notes.get());
 				}	
-				return StatusHelper.statusInfo("Note deleted Permanently", 40);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.notePermanentlyDeleted"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 			else
 			{
-				throw new Exception("Note Does Not Exist!");
+				throw new CreateNoteExceptions(environment.getProperty("CreateNoteExceptions"), Integer.parseInt("status.notes.failure"));
 			}
 			
 		}
 		else
 		{
-			throw new Exception("User Does Not Exist!");
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 		}
 		
 	}
@@ -134,19 +138,19 @@ public class NoteService
 				notes.get().setPin(false);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("UnPined", 50);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.unpin"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 			else
 			{
 				notes.get().setPin(true);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("Pined", 60);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.pin"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 		}
 	else
 	{
-		throw new Exception("User Doesnt Exist");
+		throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 
 	}
   }		
@@ -162,19 +166,19 @@ public class NoteService
 				notes.get().setArchive(false);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("UnArchived", 70);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.unArchive"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 			else
 			{
 				notes.get().setArchive(true);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("Archived", 80);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.archived"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 		}
 		else
 		{
-			throw new Exception("User Doesnt Exist");
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 
 		}
 		
@@ -191,19 +195,19 @@ public class NoteService
 				notes.get().setTrash(false);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("UnTrashed", 90);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.untrash"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 			else
 			{
 				notes.get().setTrash(true);
 				notes.get().setModefiedDateTime(LocalDateTime.now());
 				noteRepository.save(notes.get());
-				return StatusHelper.statusInfo("Trashed", 91);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.trash"), Integer.parseInt(environment.getProperty("status.notes.success")));
 			}
 		}
 		else
 		{
-			throw new Exception("User Doesnt Exist");
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 
 		}
 	}
