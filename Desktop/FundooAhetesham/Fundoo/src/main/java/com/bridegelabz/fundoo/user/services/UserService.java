@@ -58,6 +58,7 @@ public class UserService implements IUserService
 	 */
 	public Response saveMyUser(UserDto userDto) throws RegistrationExceptions, IllegalArgumentException, UnsupportedEncodingException
 	{
+		System.out.println("Inside save my user fun");
 		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));  
 		User user = modelMapper.map(userDto, User.class);
 		Optional<User> userExist = userRepository.findByEmailId(user.getEmailId());
@@ -68,13 +69,16 @@ public class UserService implements IUserService
 		}
 		else
 		{
+			System.out.println("Inside else to save");
 			user.setRegisteredDate(LocalDate.now());
 			userRepository.save(user);
+			System.out.println("User saved");
 			String to=user.getEmailId();
 			String sub="Verification";
 			String url="http://localhost:8080/user/"+UserToken.generateToken(user.getId());
 			emailService.sendMail(to,sub,url);
-			return StatusHelper.statusInfo(environment.getProperty("status.register.mailSent"), Integer.parseInt(environment.getProperty("status.register.mailSentCode")));
+			System.out.println("Mail sent");
+			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
 		}	
 	}
 	/**

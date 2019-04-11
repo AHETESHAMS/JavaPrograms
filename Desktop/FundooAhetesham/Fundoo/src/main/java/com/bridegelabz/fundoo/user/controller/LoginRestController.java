@@ -42,7 +42,9 @@ public class LoginRestController
 	@PostMapping("/saveuser")
 	public ResponseEntity<Response>  saveUser(@RequestBody UserDto userDto) throws IllegalArgumentException, UnsupportedEncodingException, RegistrationExceptions
 	{
+		System.out.println("Inside save user");
 		Response response = userService.saveMyUser(userDto); 
+		System.out.println("Response got");
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	@GetMapping("user/{token}")

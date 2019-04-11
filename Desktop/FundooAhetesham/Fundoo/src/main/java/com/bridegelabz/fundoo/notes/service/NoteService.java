@@ -1,6 +1,7 @@
 package com.bridegelabz.fundoo.notes.service;
 import  org.springframework.core.env.Environment;
 
+
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class NoteService
 	    	int existingUserId = notes.get().getUser().getId();
 	    	if(userId == existingUserId)
 	    	{
-	    		notes.get().setCreatedDateAndTime(LocalDateTime.now());
+	    		notes.get().setModefiedDateTime(LocalDateTime.now());
 	    		notes.get().setTitle(noteDto.getTitle());
 	    		notes.get().setDescription(noteDto.getDescription());
 				noteRepository.save(notes.get());

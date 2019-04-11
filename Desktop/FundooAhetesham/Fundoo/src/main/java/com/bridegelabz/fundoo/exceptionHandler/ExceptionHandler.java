@@ -1,9 +1,11 @@
 package com.bridegelabz.fundoo.exceptionHandler;
 
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.bridegelabz.fundoo.exception.CreateLabelExceptions;
 import com.bridegelabz.fundoo.exception.CreateNoteExceptions;
 import com.bridegelabz.fundoo.exception.LoginExceptions;
 import com.bridegelabz.fundoo.exception.RegistrationExceptions;
@@ -33,5 +35,11 @@ public class ExceptionHandler
 		Response response = StatusHelper.statusInfo(createNoteExceptions.getMessage(), createNoteExceptions.getErrorCode());
 		return new ResponseEntity<Response> (response , HttpStatus.OK);
 		
+	}
+	@org.springframework.web.bind.annotation.ExceptionHandler(value = CreateLabelExceptions.class)
+	public ResponseEntity<Response> createLabelExceptionHandler(CreateLabelExceptions createLabelExceptions)
+	{
+		Response response = StatusHelper.statusInfo(createLabelExceptions.getMessage(), createLabelExceptions.getErrorCode());
+		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
 }
