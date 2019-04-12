@@ -1,15 +1,19 @@
 package com.bridegelabz.fundoo.label.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bridegelabz.fundoo.notes.model.Notes;
 import com.bridegelabz.fundoo.user.model.User;
 @Entity
 @Table(name = "label")
@@ -21,14 +25,29 @@ public class Label
 	private String name;
 	private LocalDateTime createDate;
 	private LocalDateTime modifiedDate;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "note_id")
+	private List<Notes> note;
 	public Label() 
 	{
 		
 
 	}
+	
+
+	public List<Notes> getNote() {
+		return note;
+	}
+
+
+	public void setNote(List<Notes> note) {
+		this.note = note;
+	}
+
+
 	public int getId() {
 		return id;
 	}
@@ -62,8 +81,7 @@ public class Label
 	@Override
 	public String toString() {
 		return "Label [id=" + id + ", name=" + name + ", createDate=" + createDate + ", modifiedDate=" + modifiedDate
-				+ ", user=" + user + "]";
+				+ ", user=" + user + ", note=" + note + "]";
 	}
-	
 	
 }

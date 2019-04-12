@@ -1,6 +1,7 @@
 package com.bridegelabz.fundoo.notes.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,9 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bridegelabz.fundoo.label.model.Label;
 import com.bridegelabz.fundoo.user.model.User;
 @Entity
 @Table(name = "notes")
@@ -30,18 +33,8 @@ public class Notes
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	public LocalDateTime getModefiedDateTime() {
-		return modefiedDateTime;
-	}
-	public void setModefiedDateTime(LocalDateTime modefiedDateTime) {
-		this.modefiedDateTime = modefiedDateTime;
-	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
+	@ManyToMany(cascade=CascadeType.ALL)
+	private List<Label> label;
 	public int getId() {
 		return id;
 	}
@@ -60,7 +53,6 @@ public class Notes
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 	public boolean isPin() {
 		return isPin;
 	}
@@ -85,12 +77,31 @@ public class Notes
 	public void setCreatedDateAndTime(LocalDateTime createdDateAndTime) {
 		this.createdDateAndTime = createdDateAndTime;
 	}
+	public LocalDateTime getModefiedDateTime() {
+		return modefiedDateTime;
+	}
+	public void setModefiedDateTime(LocalDateTime modefiedDateTime) {
+		this.modefiedDateTime = modefiedDateTime;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public List<Label> getLabel() {
+		return label;
+	}
+	public void setLabel(List<Label> label) {
+		this.label = label;
+	}
 	@Override
 	public String toString() {
 		return "Notes [id=" + id + ", title=" + title + ", description=" + description + ", isPin=" + isPin
 				+ ", isArchive=" + isArchive + ", isTrash=" + isTrash + ", createdDateAndTime=" + createdDateAndTime
-				+ ", modefiedDateTime=" + modefiedDateTime + ", user=" + user + "]";
+				+ ", modefiedDateTime=" + modefiedDateTime + ", user=" + user + ", label=" + label + "]";
 	}
+	
 
 	
 }

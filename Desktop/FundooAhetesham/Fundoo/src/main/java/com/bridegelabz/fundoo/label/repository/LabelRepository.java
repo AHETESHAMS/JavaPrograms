@@ -11,4 +11,5 @@ import com.bridegelabz.fundoo.notes.model.Notes;
 public interface LabelRepository extends CrudRepository<Label, Integer> 
 {
 	 public Optional<Label> findById(int id);
+	 public Optional<Label> findByname(String name);
 }

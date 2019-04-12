@@ -1,22 +1,22 @@
 package com.bridegelabz.fundoo.label.service;
 
 import java.io.UnsupportedEncodingException;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.bridegelabz.fundoo.exception.CreateLabelExceptions;
 import com.bridegelabz.fundoo.label.dto.LabelDto;
 import com.bridegelabz.fundoo.label.model.Label;
 import com.bridegelabz.fundoo.label.repository.LabelRepository;
+import com.bridegelabz.fundoo.notes.model.Notes;
+import com.bridegelabz.fundoo.notes.repository.NoteRepository;
 import com.bridegelabz.fundoo.response.Response;
+import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 import com.bridegelabz.fundoo.util.StatusHelper;
 import com.bridegelabz.fundoo.util.UserToken;
@@ -31,6 +31,8 @@ public class LabelService
 	UserRepository userRepository;
 	@Autowired
 	LabelRepository labelRepository;
+	@Autowired
+	NoteRepository noteRepository;
 	public Response createLabel(LabelDto labelDto,  String token) throws UnsupportedEncodingException
 	{
 		if(labelDto.getName().isEmpty())
@@ -101,6 +103,55 @@ public class LabelService
 		}
 		
 		return StatusHelper.statusInfo(environment.getProperty("status.label.deleted"), Integer.parseInt(environment.getProperty("status.label.success")));
+	}
+	public Response addLabelToNote(LabelDto labelDto, String token, int noteId) throws UnsupportedEncodingException 
+	{
+		int userId = UserToken.tokenVerify(token);
+		Optional<User> user = userRepository.findById(userId);
+		System.out.println(user.toString());
+		if(user.isPresent())
+		{
+			System.out.println(userId);
+			Optional<Notes> note = noteRepository.findById(noteId);
+			System.out.println(note.isPresent());
+			System.out.println(noteId);
+			System.out.println(note.get());
+			
+			if(note.isPresent())
+			{
+		 
+				Optional<Label> labelExist = labelRepository.findByname(labelDto.getName());
+				if(labelExist.isPresent())
+				{
+//					throw new CreateLabelExceptions(environment.getProperty("status.label.labelAlreadyExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+				note.get().getLabel().add(labelExist.get());
+				noteRepository.save(note.get());
+				return StatusHelper.statusInfo("new label added to note",200);
+				}
+				else
+				{
+					Label label = modelMapper.map(labelDto, Label.class);
+				//	label.setNote(note.get());
+					label.setUser(user.get());
+					
+					//label.getNote().add(note.get());
+					
+					label.setCreateDate(LocalDateTime.now());
+					note.get().getLabel().add(label);
+					noteRepository.save(note.get());
+					return StatusHelper.statusInfo(environment.getProperty("status.label.labelAddedToNote "), Integer.parseInt(environment.getProperty("status.label.success")));
+				}
+				
+			}
+			else
+			{
+				throw new  CreateLabelExceptions(environment.getProperty("status.label.noteNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+			}
+		}
+		else
+		{
+			throw new CreateLabelExceptions(environment.getProperty("status.label.userNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+		}
 	}
 
 }

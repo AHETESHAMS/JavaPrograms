@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridegelabz.fundoo.label.dto.LabelDto;
+import com.bridegelabz.fundoo.label.model.Label;
 import com.bridegelabz.fundoo.label.repository.LabelRepository;
 import com.bridegelabz.fundoo.label.service.LabelService;
 import com.bridegelabz.fundoo.response.Response;
@@ -23,7 +24,7 @@ public class LabelRestController
 	@Autowired
 	LabelService labelService;
 	@PostMapping("/createlabel")
-	public ResponseEntity<Response> createLabel(@RequestBody LabelDto labelDto, @RequestParam String token) throws UnsupportedEncodingException
+	public ResponseEntity<Response> createLabel(@RequestBody LabelDto labelDto, @RequestParam String token, @RequestParam int noteId) throws UnsupportedEncodingException
 	{
 		Response response = labelService.createLabel(labelDto, token);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
@@ -40,6 +41,13 @@ public class LabelRestController
 	{
 		Response response = labelService.deleteLabel(token, labelId);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		
+	}
+	@PostMapping("/addlabeltonote")
+	public ResponseEntity<Response> addLabelToNote(@RequestBody LabelDto labelDto, @RequestParam String token, @RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		Response response = labelService.addLabelToNote(labelDto, token, noteId);
+		return new ResponseEntity<Response> (response, HttpStatus.OK);
 		
 	}
 	
