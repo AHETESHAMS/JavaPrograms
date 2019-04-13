@@ -24,6 +24,7 @@ import com.bridegelabz.fundoo.response.Response;
 import com.bridegelabz.fundoo.response.ResponseToken;
 import com.bridegelabz.fundoo.user.dto.LoginDto;
 import com.bridegelabz.fundoo.user.dto.UserDto;
+import com.bridegelabz.fundoo.user.model.Email;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
 /**
@@ -58,6 +59,7 @@ public class UserService implements IUserService
 	 */
 	public Response saveMyUser(UserDto userDto) throws RegistrationExceptions, IllegalArgumentException, UnsupportedEncodingException
 	{
+		Email email = new Email();
 		System.out.println("Inside save my user fun");
 		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));  
 		User user = modelMapper.map(userDto, User.class);
@@ -73,10 +75,11 @@ public class UserService implements IUserService
 			user.setRegisteredDate(LocalDate.now());
 			userRepository.save(user);
 			System.out.println("User saved");
-			String to=user.getEmailId();
-			String sub="Verification";
-			String url="http://localhost:8080/user/"+UserToken.generateToken(user.getId());
-			emailService.sendMail(to,sub,url);
+			email.setFrom("aheteshams007@gmail.com");
+			email.setTo(user.getEmailId());
+			email.setSubject("User Verification");
+			email.setBody("http://192.168.0.43:8080/user/"+UserToken.generateToken(user.getId()));
+			emailService.sendMail(email);
 			System.out.println("Mail sent");
 			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
 		}	
@@ -101,13 +104,14 @@ public class UserService implements IUserService
 	 */
 	public Response changePasswordMailSender(String emailId) throws IllegalArgumentException, UnsupportedEncodingException 
 	{
-		String to = emailId;
-		String subject = "Change Password";
+		Email email = new Email();
+		email.setTo(emailId);
+		email.setSubject("Change Password");
 		Optional<User> user = userRepository.findByEmailId(emailId);
 		if(user.isPresent())
 		{
-			String url = "http://localhost:8080/setPassword/"+UserToken.generateToken(user.get().getId());
-			emailService.sendMail(to, subject, url);
+			email.setBody("http://192.168.0.43:8080/setPassword/"+UserToken.generateToken(user.get().getId()));
+			emailService.sendMail(email);
 			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
 		}
 		else

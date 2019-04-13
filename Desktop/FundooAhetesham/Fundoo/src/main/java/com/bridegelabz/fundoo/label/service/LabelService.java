@@ -123,19 +123,15 @@ public class LabelService
 				Optional<Label> labelExist = labelRepository.findByname(labelDto.getName());
 				if(labelExist.isPresent())
 				{
-//					throw new CreateLabelExceptions(environment.getProperty("status.label.labelAlreadyExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
-				note.get().getLabel().add(labelExist.get());
-				noteRepository.save(note.get());
-				return StatusHelper.statusInfo("new label added to note",200);
+			
+					note.get().getLabel().add(labelExist.get());
+					noteRepository.save(note.get());
+					return StatusHelper.statusInfo(environment.getProperty("status.label.labelAddedToNote "), Integer.parseInt(environment.getProperty("status.label.success")));
 				}
 				else
 				{
 					Label label = modelMapper.map(labelDto, Label.class);
-				//	label.setNote(note.get());
 					label.setUser(user.get());
-					
-					//label.getNote().add(note.get());
-					
 					label.setCreateDate(LocalDateTime.now());
 					note.get().getLabel().add(label);
 					noteRepository.save(note.get());
@@ -144,6 +140,30 @@ public class LabelService
 				
 			}
 			else
+			{ 
+				throw new  CreateLabelExceptions(environment.getProperty("status.label.noteNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+			}
+		}
+		else
+		{
+			throw new CreateLabelExceptions(environment.getProperty("status.label.userNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+		}
+	}
+	public Response removeLabelFromNote(String token, int noteId, int labelId) throws UnsupportedEncodingException
+	{
+		int userId = UserToken.tokenVerify(token);
+		Optional<User> user = userRepository.findById(userId);
+		if(user.isPresent())
+		{
+			Optional<Notes> note = noteRepository.findById(noteId);
+			if(note.isPresent())
+			{
+				Optional<Label> label = labelRepository.findById(labelId);
+				note.get().getLabel().remove(label.get());
+				noteRepository.save(note.get());
+				return StatusHelper.statusInfo(environment.getProperty("status.label.labelRemovedFromNote"), Integer.parseInt(environment.getProperty("status.label.success")));
+			}
+			else 
 			{
 				throw new  CreateLabelExceptions(environment.getProperty("status.label.noteNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
 			}
@@ -152,6 +172,7 @@ public class LabelService
 		{
 			throw new CreateLabelExceptions(environment.getProperty("status.label.userNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
 		}
+		
 	}
 
 }

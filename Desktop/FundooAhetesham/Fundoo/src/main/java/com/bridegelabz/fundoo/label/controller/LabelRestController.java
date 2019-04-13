@@ -50,5 +50,12 @@ public class LabelRestController
 		return new ResponseEntity<Response> (response, HttpStatus.OK);
 		
 	}
+	@PutMapping("/removelabelfromnote")
+	public ResponseEntity<Response> removeLabelFromNote(@RequestParam String token, @RequestParam int noteId, @RequestParam int labelId) throws UnsupportedEncodingException
+	{
+		Response response = labelService.removeLabelFromNote(token, noteId, labelId);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+		
+	}
 	
 }
