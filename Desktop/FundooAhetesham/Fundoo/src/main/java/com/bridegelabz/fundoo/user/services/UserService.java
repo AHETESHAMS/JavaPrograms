@@ -78,7 +78,7 @@ public class UserService implements IUserService
 			email.setFrom("aheteshams007@gmail.com");
 			email.setTo(user.getEmailId());
 			email.setSubject("User Verification");
-			email.setBody("http://192.168.0.43:8080/user/"+UserToken.generateToken(user.getId()));
+			email.setBody("http://localhost:4200/login/"+UserToken.generateToken(user.getId()));
 			emailService.sendMail(email);
 			System.out.println("Mail sent");
 			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
@@ -110,7 +110,7 @@ public class UserService implements IUserService
 		Optional<User> user = userRepository.findByEmailId(emailId);
 		if(user.isPresent())
 		{
-			email.setBody("http://192.168.0.43:8080/setPassword/"+UserToken.generateToken(user.get().getId()));
+			email.setBody("http://localhost:4200/setPassword/"+UserToken.generateToken(user.get().getId()));
 			emailService.sendMail(email);
 			return StatusHelper.statusInfo(environment.getProperty("status.mail.mailSent"), Integer.parseInt(environment.getProperty("status.mail.mailSentCode")));
 		}

@@ -126,6 +126,7 @@ public class LabelService
 			
 					note.get().getLabel().add(labelExist.get());
 					noteRepository.save(note.get());
+					System.out.println("label note");
 					return StatusHelper.statusInfo(environment.getProperty("status.label.labelAddedToNote "), Integer.parseInt(environment.getProperty("status.label.success")));
 				}
 				else

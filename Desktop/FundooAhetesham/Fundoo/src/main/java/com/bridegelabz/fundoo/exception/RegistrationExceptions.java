@@ -2,18 +2,18 @@ package com.bridegelabz.fundoo.exception;
 
 public class RegistrationExceptions extends RuntimeException
 {
-	private String meassage;
+	private String message;
 	private int errorCode;
 	public RegistrationExceptions(String meassage, int errorCode) {
-		super();
-		this.meassage = meassage;
+		this.message = meassage;
 		this.errorCode = errorCode;
+		
 	}
-	public String getMeassage() {
-		return meassage;
+	public String getMessage() {
+		return message;
 	}
-	public void setMeassage(String meassage) {
-		this.meassage = meassage;
+	public void setMessage(String meassage) {
+		this.message = meassage;
 	}
 	public int getErrorCode() {
 		return errorCode;
@@ -23,7 +23,7 @@ public class RegistrationExceptions extends RuntimeException
 	}
 	@Override
 	public String toString() {
-		return "RegistrationExceptions [meassage=" + meassage + ", errorCode=" + errorCode + "]";
+		return "RegistrationExceptions [meassage=" + message + ", errorCode=" + errorCode + "]";
 	}
 	
 }

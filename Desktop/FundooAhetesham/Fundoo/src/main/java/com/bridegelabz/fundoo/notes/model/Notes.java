@@ -25,6 +25,13 @@ public class Notes
 	private int id;
 	private String title;
 	private String description;
+	private String color;
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
 	private boolean isPin=false;
 	private boolean isArchive=false;
 	private boolean isTrash=false;

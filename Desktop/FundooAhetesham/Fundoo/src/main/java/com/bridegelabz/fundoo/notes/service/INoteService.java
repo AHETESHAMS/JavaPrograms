@@ -14,4 +14,5 @@ public interface INoteService
 	public Response pin(String token, int noteId) throws Exception;
 	public Response archive(String token, int noteId) throws Exception;
 	public Response Trash(String token, int noteId) throws Exception;
+	public Response changeColor(String token,String color, int noteId);
 }

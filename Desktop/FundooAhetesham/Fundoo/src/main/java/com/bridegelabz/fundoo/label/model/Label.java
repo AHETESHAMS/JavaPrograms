@@ -28,8 +28,8 @@ public class Label
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "note_id")
+	@ManyToMany(mappedBy="label",cascade = CascadeType.ALL)
+//	@JoinColumn(name = "note_id")
 	private List<Notes> note;
 	public Label() 
 	{

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,7 @@ import com.bridegelabz.fundoo.util.UserToken;
  * @author Ahetesham Ahamad
  *
  */
+@CrossOrigin( origins = "*", allowedHeaders = "*")
 @RestController
 public class LoginRestController 
 {
@@ -39,7 +41,9 @@ public class LoginRestController
 	private UserService userService;
 	@Autowired
 	UserRepository userrepository;
+	
 	@PostMapping("/saveuser")
+	//@CrossOrigin("*")
 	public ResponseEntity<Response>  saveUser(@RequestBody UserDto userDto) throws IllegalArgumentException, UnsupportedEncodingException, RegistrationExceptions
 	{
 		System.out.println("Inside save user");
@@ -64,6 +68,7 @@ public class LoginRestController
 	@PostMapping("/forgotPassword")
 	public ResponseEntity<Response> forgotPassword(@RequestParam String emailId) throws IllegalArgumentException, UnsupportedEncodingException
 	{
+		System.out.println(emailId);
 		Response response = userService.changePasswordMailSender(emailId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}

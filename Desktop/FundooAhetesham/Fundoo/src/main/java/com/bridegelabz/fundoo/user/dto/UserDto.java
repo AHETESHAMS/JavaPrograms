@@ -1,9 +1,21 @@
 package com.bridegelabz.fundoo.user.dto;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class UserDto 
 {
+	@NotEmpty(message="Name Cannot Not be Empty")
+	@NotNull(message="Name Cannot Not be null")
 	private String name;
+	@NotEmpty(message="EmailId Cannot Not be Empty")
+	@NotNull(message="EmailId Cannot Not be null")
 	private String emailId;
+	@NotEmpty(message="PhNumber Cannot Not be Empty")
+	@NotNull(message="PhNumber Cannot Not be null")
 	private String phNumber;
+	@NotEmpty(message="Password Cannot Not be Empty")
+	@NotNull(message="Password Cannot Not be null")
 	private String password;
 	public String getName() {
 		return name;

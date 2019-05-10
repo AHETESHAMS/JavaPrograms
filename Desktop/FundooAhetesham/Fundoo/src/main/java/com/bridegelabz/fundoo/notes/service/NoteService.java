@@ -4,6 +4,8 @@ import  org.springframework.core.env.Environment;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -40,15 +42,14 @@ public class NoteService
 		Optional<User> user = userRepositpory.findById(id);
 		if(user.isPresent())
 		{
-			notes.setUser(user.get());
-			notes.setCreatedDateAndTime(LocalDateTime.now());
-			noteRepository.save(notes);
-			return StatusHelper.statusInfo(environment.getProperty("status.notes.noteCreated"), Integer.parseInt(environment.getProperty("status.notes.success")));
+				System.out.println("title="+notes.getTitle());
+				notes.setUser(user.get());
+				notes.setCreatedDateAndTime(LocalDateTime.now());
+				noteRepository.save(notes);
+				return StatusHelper.statusInfo(environment.getProperty("status.notes.noteCreated"), Integer.parseInt(environment.getProperty("status.notes.success")));
 		}	
-		else
-		{
-			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
-		}
+		
+		return null;
 	}
 	public Response updateNote(NotesDto noteDto, String token, int noteId) throws Exception
 	{
@@ -121,6 +122,94 @@ public class NoteService
 			}
 			
 		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+		
+	}
+	public List<Notes> getAllNotes(String token) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			List<Notes> notes = noteRepository.findNotesByUser(user.get());
+			List<Notes> listOfNotes = new ArrayList<>();
+			for(Notes userNotes : notes) 
+			{
+				if(userNotes.isArchive() == false && userNotes.isTrash() == false) {
+					listOfNotes.add(userNotes);
+			}
+		}
+		return listOfNotes;
+		}	
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+		
+	}
+	public List<Notes> getAllTrashedNotes(String token) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			List<Notes> notes = noteRepository.findNotesByUser(user.get());
+			List<Notes> listOfTrashedNotes = new ArrayList<>();
+			for(Notes userNotes : notes) 
+			{
+				if(userNotes.isTrash() == true) {
+					listOfTrashedNotes.add(userNotes);
+			}
+		}
+		return listOfTrashedNotes;
+		}	
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+		
+	}
+	public List<Notes> getAllPinnedNotes(String token) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			List<Notes> notes = noteRepository.findNotesByUser(user.get());
+			List<Notes> listOfPinnedNotes = new ArrayList<>();
+			for(Notes userNotes : notes) 
+			{
+				if(userNotes.isPin() == true) {
+					listOfPinnedNotes.add(userNotes);
+			}
+		}
+		return listOfPinnedNotes;
+		}	
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+		
+	}
+	public List<Notes> getAllArchivedNotes(String token) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			List<Notes> notes = noteRepository.findNotesByUser(user.get());
+			List<Notes> listOfArchivedNotes = new ArrayList<>();
+			for(Notes userNotes : notes) 
+			{
+				if(userNotes.isPin() == true) {
+					listOfArchivedNotes.add(userNotes);
+			}
+		}
+		return listOfArchivedNotes;
+		}	
 		else
 		{
 			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
@@ -211,6 +300,17 @@ public class NoteService
 			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
 
 		}
+	}
+	public Response changeColor(String token,String color, int noteId) throws UnsupportedEncodingException {
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepositpory.findById(id);
+		List<Notes> notes = noteRepository.findNotesByUser(user.get());
+		Notes note = notes.stream().filter(data-> data.getId()== noteId).findFirst().get();
+		System.out.println(note);
+		note.setColor(color);
+		noteRepository.save(note);
+		return StatusHelper.statusInfo("color change", 200);
+		
 	}
 }
 	
