@@ -3,6 +3,8 @@ package com.bridegelabz.fundoo.label.service;
 import java.io.UnsupportedEncodingException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import com.bridegelabz.fundoo.exception.CreateLabelExceptions;
+import com.bridegelabz.fundoo.exception.CreateNoteExceptions;
 import com.bridegelabz.fundoo.label.dto.LabelDto;
 import com.bridegelabz.fundoo.label.model.Label;
 import com.bridegelabz.fundoo.label.repository.LabelRepository;
@@ -91,6 +94,16 @@ public class LabelService
 			if(label.isPresent())
 			{
 				labelRepository.delete(label.get());
+				Optional<com.bridegelabz.fundoo.user.model.User> userStill = userRepository.findById(userId);
+				if(userStill.isPresent())
+				{
+					System.out.println("still present");
+				}
+				else
+				{
+					System.out.println("User also deleted");
+				}
+				
 			}
 			else
 			{
@@ -124,19 +137,23 @@ public class LabelService
 				if(labelExist.isPresent())
 				{
 			
-					note.get().getLabel().add(labelExist.get());
+					note.get().getListLabel().add(labelExist.get());
 					noteRepository.save(note.get());
 					System.out.println("label note");
 					return StatusHelper.statusInfo(environment.getProperty("status.label.labelAddedToNote "), Integer.parseInt(environment.getProperty("status.label.success")));
+//					throw new CreateLabelExceptions(environment.getProperty("status.label.labelAlreadyExist"),Integer.parseInt(environment.getProperty("status.label.failure")));
 				}
 				else
 				{
 					Label label = modelMapper.map(labelDto, Label.class);
 					label.setUser(user.get());
 					label.setCreateDate(LocalDateTime.now());
-					note.get().getLabel().add(label);
+					note.get().getListLabel().add(label);
+					System.out.println("List Of Labels "+note.get().getListLabel());
 					noteRepository.save(note.get());
 					return StatusHelper.statusInfo(environment.getProperty("status.label.labelAddedToNote "), Integer.parseInt(environment.getProperty("status.label.success")));
+					
+					
 				}
 				
 			}
@@ -160,7 +177,7 @@ public class LabelService
 			if(note.isPresent())
 			{
 				Optional<Label> label = labelRepository.findById(labelId);
-				note.get().getLabel().remove(label.get());
+				note.get().getListLabel().remove(label.get());
 				noteRepository.save(note.get());
 				return StatusHelper.statusInfo(environment.getProperty("status.label.labelRemovedFromNote"), Integer.parseInt(environment.getProperty("status.label.success")));
 			}
@@ -175,5 +192,43 @@ public class LabelService
 		}
 		
 	}
-
+	public List<Label> getAllLabels(String token) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional <User> user = userRepository.findById(id);
+		if(user.isPresent())
+		{
+			List<Label> labels = labelRepository.findNotesByUser(user.get());
+			List<Label> listOfLabels = new ArrayList<>();
+			for(Label userLabels : labels) 
+				{
+					listOfLabels.add(userLabels);
+				}
+			return listOfLabels;
+		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+	}
+	public List<Label> getLebelsOfNote(String token, int noteId) throws UnsupportedEncodingException {
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepository.findById(id);
+		if(!user.isPresent()) {
+			throw new CreateLabelExceptions(environment.getProperty("status.label.userNotExist "), Integer.parseInt(environment.getProperty("status.label.failure")));
+		}
+		Optional<Notes> note = noteRepository.findById(noteId);
+		if(!note.isPresent()) {
+			throw new  CreateLabelExceptions(environment.getProperty("status.label.noteNotExist"), Integer.parseInt(environment.getProperty("status.label.failure")));
+		}
+		List<Label> lebel = note.get().getListLabel();
+		
+//		List<LabelDto> listLabel = new ArrayList<>();
+//		for(Label noteLabel : lebel) {
+//			LabelDto labelDto = modelMapper.map(noteLabel, LabelDto.class);
+//			listLabel.add(labelDto);
+//		}
+		return lebel;
+		
+	}
 }

@@ -1,12 +1,18 @@
 package com.bridegelabz.fundoo.user.model;
 import java.time.LocalDate;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.bridegelabz.fundoo.notes.model.Notes;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name="user")
 public class User 
@@ -30,7 +36,26 @@ public class User
 	private boolean isVerified=false;
 	private LocalDate registeredDate;
 	private LocalDate modifiedDate;
-	
+	private String profilePic;
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	@JsonIgnore
+	@ManyToMany
+	private Set<Notes> collaboratedNotes;
+	public Set<Notes> getCollaboratedNotes() {
+		return collaboratedNotes;
+	}
+
+	public void setCollaboratedNotes(Set<Notes> collaboratedNotes) {
+		this.collaboratedNotes = collaboratedNotes;
+	}
+
 	public User() {
 		
 	}

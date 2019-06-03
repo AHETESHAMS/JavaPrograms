@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridegelabz.fundoo.exception.RegistrationExceptions;
 import com.bridegelabz.fundoo.response.Response;
@@ -83,5 +86,21 @@ public class LoginRestController
 	{
 		Response response = userService.changePasswordMailSender(oldEmailId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	@PostMapping("/uploadImage")
+//	@RequestMapping(value="/uploadImage",method= RequestMethod.PUT.consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Response> uploadImage(@RequestParam String token, @RequestBody MultipartFile file) throws UnsupportedEncodingException
+	{
+		System.out.println("Just hit to controller upload");
+		System.out.println("File"+file);
+		Response response = userService.uploadImage(token, file);
+		return new ResponseEntity<Response>(response,HttpStatus.OK);
+	}
+	@GetMapping("/getUploadedImage")
+	public ResponseEntity<Resource> getUploadedImage(@RequestParam String token) throws UnsupportedEncodingException
+	{
+		Resource resource = userService.getUploadedImage(token);
+		System.out.println("hit to Controller, get image  "+resource);
+		return new ResponseEntity<Resource>(resource,HttpStatus.OK);
 	}
 }

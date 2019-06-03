@@ -7,20 +7,28 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bridegelabz.fundoo.elasticsearch.ElasticSearchImpl;
 import com.bridegelabz.fundoo.exception.CreateNoteExceptions;
 import com.bridegelabz.fundoo.notes.dto.NotesDto;
 import com.bridegelabz.fundoo.notes.model.Notes;
 import com.bridegelabz.fundoo.notes.repository.NoteRepository;
 import com.bridegelabz.fundoo.response.Response;
+import com.bridegelabz.fundoo.user.model.Email;
 import com.bridegelabz.fundoo.user.model.User;
 import com.bridegelabz.fundoo.user.repository.UserRepository;
+import com.bridegelabz.fundoo.user.services.EmailService;
+import com.bridegelabz.fundoo.util.GenerateMail;
+import com.bridegelabz.fundoo.util.NoteContainer;
+import com.bridegelabz.fundoo.util.NoteOperation;
 import com.bridegelabz.fundoo.util.StatusHelper;
 import com.bridegelabz.fundoo.util.UserToken;
+
 @Service
 public class NoteService 
 {
@@ -32,6 +40,14 @@ public class NoteService
 	private UserRepository userRepositpory;
 	@Autowired
 	private Environment environment;
+	@Autowired
+	private EmailService emailService;
+	@Autowired
+	private ElasticSearchImpl elasticSearch;
+	@Autowired
+	private GenerateMail rabbitMqService;
+	@Autowired
+	private NoteContainer noteContainer;
 	public Response createNote(NotesDto noteDto, String token) throws UnsupportedEncodingException
 	{
 		if(noteDto.getTitle().isEmpty() || noteDto.getDescription().isEmpty())
@@ -46,6 +62,10 @@ public class NoteService
 				notes.setUser(user.get());
 				notes.setCreatedDateAndTime(LocalDateTime.now());
 				noteRepository.save(notes);
+				noteContainer.setNote(notes);
+				noteContainer.setNoteOperation(NoteOperation.CREATE);
+				//rabbitMqService.sendNote(noteContainer);
+				rabbitMqService.operation(noteContainer);
 				return StatusHelper.statusInfo(environment.getProperty("status.notes.noteCreated"), Integer.parseInt(environment.getProperty("status.notes.success")));
 		}	
 		
@@ -67,6 +87,10 @@ public class NoteService
 	    		notes.get().setTitle(noteDto.getTitle());
 	    		notes.get().setDescription(noteDto.getDescription());
 				noteRepository.save(notes.get());
+				noteContainer.setNote(notes.get());
+				noteContainer.setNoteOperation(NoteOperation.UPDATE);
+				//rabbitMqService.sendNote(noteContainer);
+				rabbitMqService.operation(noteContainer);
 	    	}
 	    		
 	    }
@@ -128,6 +152,12 @@ public class NoteService
 		}
 		
 	}
+	public List<Notes> searchNote(String query, String token) throws UnsupportedEncodingException {
+		int userId = UserToken.tokenVerify(token);
+		List<Notes> data = elasticSearch.searchData(query, userId);
+		System.out.println("data" + data);
+		return data;
+	}
 	public List<Notes> getAllNotes(String token) throws UnsupportedEncodingException
 	{
 		int id = UserToken.tokenVerify(token);
@@ -138,7 +168,7 @@ public class NoteService
 			List<Notes> listOfNotes = new ArrayList<>();
 			for(Notes userNotes : notes) 
 			{
-				if(userNotes.isArchive() == false && userNotes.isTrash() == false) {
+				if(userNotes.isArchive() == false && userNotes.isTrash() == false && userNotes.isPin()==false) {
 					listOfNotes.add(userNotes);
 			}
 		}
@@ -204,7 +234,7 @@ public class NoteService
 			List<Notes> listOfArchivedNotes = new ArrayList<>();
 			for(Notes userNotes : notes) 
 			{
-				if(userNotes.isPin() == true) {
+				if(userNotes.isArchive() == true && userNotes.isTrash()==false && userNotes.isPin()==false) {
 					listOfArchivedNotes.add(userNotes);
 			}
 		}
@@ -301,6 +331,7 @@ public class NoteService
 
 		}
 	}
+	
 	public Response changeColor(String token,String color, int noteId) throws UnsupportedEncodingException {
 		int id = UserToken.tokenVerify(token);
 		Optional <User> user = userRepositpory.findById(id);
@@ -311,6 +342,178 @@ public class NoteService
 		noteRepository.save(note);
 		return StatusHelper.statusInfo("color change", 200);
 		
+	}
+	public Response collaborate(String token, String emailId, int noteId) throws UnsupportedEncodingException
+	{
+		Email email = new Email();
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional <User> receiverUser = userRepositpory.findByEmailId(emailId);
+			if(receiverUser.isPresent())
+			{
+				if(user.get().getEmailId().equals(receiverUser))
+				{
+					System.out.println("Inside user Already exist");
+					throw new CreateNoteExceptions(environment.getProperty("status.notes.userAlreadyExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+				}
+				else
+				{
+					Optional <Notes> note = noteRepository.findById(noteId);
+					if(note.isPresent())
+					{
+						if(user.get().getCollaboratedNotes().contains(note.get()))
+						{
+							throw new CreateNoteExceptions("User is Already Collaborated", Integer.parseInt(environment.getProperty("status.notes.failure")));
+						}
+						note.get().getCollaboratedUser().add(receiverUser.get());
+						receiverUser.get().getCollaboratedNotes().add(note.get());
+						noteRepository.save(note.get());
+						userRepositpory.save(user.get());
+						email.setFrom(user.get().getEmailId());
+						System.out.println(user.get().getEmailId());
+						email.setSubject("Note Collaborated");
+						email.setTo(receiverUser.get().getEmailId());
+						System.out.println(receiverUser.get().getEmailId());
+						email.setBody("Note Collaborated to You!");
+						emailService.sendMail(email);
+						System.out.println("Mail Sent "+user.get().getCollaboratedNotes());
+						return StatusHelper.statusInfo(environment.getProperty("status.notes.collaborated"), Integer.parseInt(environment.getProperty("status.notes.success")));
+					}
+					else
+					{
+						throw new CreateNoteExceptions(environment.getProperty("status.notes.noteDoesNotExist "),Integer.parseInt(environment.getProperty("status.notes.failure")));
+					}
+				}
+			}	
+			else
+			{
+				throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+			}
+		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+	}
+	public Response removeCollaborator(String token, String emailId, int noteId) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			Optional <User> receiverUser = userRepositpory.findByEmailId(emailId);
+			if(receiverUser.isPresent())
+			{
+				Optional <Notes> note = noteRepository.findById(noteId);
+				if(note.isPresent())
+				{
+					System.out.println("Inside Remove Collaborator");
+					note.get().getCollaboratedUser().remove(receiverUser.get());
+					user.get().getCollaboratedNotes().remove(note.get());
+					System.out.println("Removed "+note.get().getCollaboratedUser());
+					userRepositpory.save(receiverUser.get());
+					noteRepository.save(note.get());
+					return StatusHelper.statusInfo(environment.getProperty("status.notes.removeCollaborator"), Integer.parseInt(environment.getProperty("status.notes.success")));
+				}
+				else
+				{
+					throw new CreateNoteExceptions(environment.getProperty("status.notes.noteDoesNotExist "),Integer.parseInt(environment.getProperty("status.notes.failure")));
+				}
+			}	
+			else
+			{
+				throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+			}
+		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+	}
+	public Set<Notes> getAllCollaboratedNotes(String token) throws UnsupportedEncodingException 
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+				System.out.println("inside if of user");
+				System.out.println("Inside if of another user");
+				System.out.println(user.get().getCollaboratedNotes());
+				return user.get().getCollaboratedNotes();
+		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+	}
+	public Set<User> getAllCollaboratedUser(String token, int noteId) throws UnsupportedEncodingException 
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(user.isPresent())
+		{
+			System.out.println("inside if of user");
+			Optional<Notes> note = noteRepository.findById(noteId);
+			if(note.isPresent())
+			{
+				System.out.println("Inside if of another user");
+				System.out.println("MyNotes="+ note.get().getCollaboratedUser());
+				return note.get().getCollaboratedUser();
+				
+			}
+			else
+			{
+				throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+			}
+		}
+		else
+		{
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		}
+	}
+	
+	public Response addReminder(String token, int noteId, String reminder) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(!user.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		Optional<Notes> note = noteRepository.findById(noteId);
+		if(!note.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.noteDoesNotExist "),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		note.get().setReminder(reminder);
+		noteRepository.save(note.get());
+		return StatusHelper.statusInfo("Reminder Set SuccssFully", Integer.parseInt(environment.getProperty("status.notes.success")));
+		
+	}
+	public Response removeReminder(String token, int noteId) throws UnsupportedEncodingException 
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(!user.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		Optional<Notes> note = noteRepository.findById(noteId);
+		if(!note.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.noteDoesNotExist "),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		note.get().setReminder(null);
+		noteRepository.save(note.get());
+		return StatusHelper.statusInfo("Reminder Removed SuccssFully", Integer.parseInt(environment.getProperty("status.notes.success")));
+	}
+	public String getReminder(String token, int noteId) throws UnsupportedEncodingException
+	{
+		int id = UserToken.tokenVerify(token);
+		Optional<User> user = userRepositpory.findById(id);
+		if(!user.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.userNotExist"),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		Optional<Notes> note = noteRepository.findById(noteId);
+		if(!note.isPresent())
+			throw new CreateNoteExceptions(environment.getProperty("status.notes.noteDoesNotExist "),Integer.parseInt(environment.getProperty("status.notes.failure")));
+		String reminder = note.get().getReminder();
+		System.out.println("NoteId:="+note.get().getId()+"Reminder:="+reminder);
+		return reminder;
+	
 	}
 }
 	

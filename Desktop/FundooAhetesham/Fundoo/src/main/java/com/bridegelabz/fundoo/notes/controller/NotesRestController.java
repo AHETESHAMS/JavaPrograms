@@ -2,6 +2,7 @@ package com.bridegelabz.fundoo.notes.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bridegelabz.fundoo.notes.dto.NotesDto;
 import com.bridegelabz.fundoo.notes.model.Notes;
+import com.bridegelabz.fundoo.notes.repository.NoteRepository;
 import com.bridegelabz.fundoo.notes.service.NoteService;
 import com.bridegelabz.fundoo.response.Response;
+import com.bridegelabz.fundoo.user.model.User;
 @CrossOrigin( origins = "*", allowedHeaders = "*")
 @RestController
 public class NotesRestController 
@@ -33,8 +36,9 @@ public class NotesRestController
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	@PutMapping("/updatenote")
-	public ResponseEntity<Response> updateNotes(@RequestBody NotesDto noteDto, @RequestParam String token, @RequestParam int noteId) throws Exception
+	public ResponseEntity<Response> updateNotes(@RequestParam String token, @RequestParam int noteId, @RequestBody NotesDto noteDto) throws Exception
 	{
+		System.out.println("hit to update");
 		Response response = noteService.updateNote(noteDto, token, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 		
@@ -59,6 +63,7 @@ public class NotesRestController
 	public List<Notes> getAllNotes(@RequestParam String token) throws UnsupportedEncodingException
 	{
 		List<Notes> listOfNotes = noteService.getAllNotes(token);
+		System.out.println("List of Notes"+listOfNotes);
 		return listOfNotes;
 	}
 	@GetMapping("/getalltrashednotes")
@@ -70,6 +75,7 @@ public class NotesRestController
 	@GetMapping("/getallpinednotes")
 	public List<Notes> getAllPinnedNotes(@RequestParam String token) throws UnsupportedEncodingException
 	{
+		System.out.println("hit to pinned notes");
 		List<Notes> listOfPinnedNotes = noteService.getAllPinnedNotes(token);
 		return listOfPinnedNotes;
 	}
@@ -103,5 +109,58 @@ public class NotesRestController
 		System.out.println(color);
 		Response response = noteService.changeColor(token, color, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	@PostMapping("/addcollaborator")
+	public ResponseEntity<Response> collaborate(@RequestParam String token, @RequestParam String emailId, @RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		Response response = noteService.collaborate(token, emailId,noteId);
+		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		
+	}
+	@PutMapping("/removecollaborator")
+	public ResponseEntity<Response> removeCollaborator(@RequestParam String token, @RequestParam String emailId, @RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		Response response = noteService.removeCollaborator(token, emailId,noteId);
+		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		
+	}
+	@GetMapping("/getcollaboratednotes")
+	public Set<Notes> getCollaboratedNotes(@RequestParam String token) throws UnsupportedEncodingException
+	{
+		Set<Notes> listOfCollaboratedNotes = noteService.getAllCollaboratedNotes(token);
+		return listOfCollaboratedNotes;
+		
+	}
+	@GetMapping("/getcollaborateduser")
+	public Set<User> getCollaboratedUser(@RequestParam String token,@RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		Set<User> listOfCollaboratedUser = noteService.getAllCollaboratedUser(token, noteId);
+		return listOfCollaboratedUser;
+		
+	}
+	@GetMapping("/search")
+	public List<Notes> searchNote(@RequestParam String token , @RequestParam String query) throws UnsupportedEncodingException {
+		List<Notes> notes = noteService.searchNote(query, token);
+		return notes;
+	}
+	@PostMapping("/addreminder")
+	public ResponseEntity<Response> addReminder(@RequestParam String token, @RequestParam int noteId, @RequestParam String reminder) throws UnsupportedEncodingException
+	{
+		Response response = noteService.addReminder(token, noteId, reminder);
+		return new ResponseEntity<Response> (response, HttpStatus.OK);
+	}
+	@PutMapping("/removeReminder")
+	public ResponseEntity<Response> removeReminder(@RequestParam String token, @RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		Response response = noteService.removeReminder(token, noteId);
+		return new ResponseEntity<Response> (response, HttpStatus.OK);
+		
+	}
+	@GetMapping("/getreminder")
+	public ResponseEntity<String> getReminder(@RequestParam String token, @RequestParam int noteId) throws UnsupportedEncodingException
+	{
+		System.out.println("Get Reminder Backend");
+		String response = noteService.getReminder(token, noteId);
+		return new ResponseEntity<String> (response, HttpStatus.OK);
 	}
 }

@@ -23,6 +23,16 @@ public class StatusHelper
 		return responseToken;
 		
 	}
+	public static ResponseToken loginStatus(String message, int code, String token, String name, String emailId)
+	{
+		ResponseToken loginResponseToken = new ResponseToken();
+		loginResponseToken.setMessage(message);
+		loginResponseToken.setCode(code);
+		loginResponseToken.setToken(token);
+		loginResponseToken.setName(name);
+		loginResponseToken.setEmailId(emailId);
+		return loginResponseToken;
+	}
 	public static ResponseToken statusResponseInfo(String message, int code)
 	{
 		ResponseToken responseToken = new ResponseToken();

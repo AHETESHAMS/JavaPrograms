@@ -13,7 +13,8 @@ public class RabbitMqConfiguration
 	private String queueName = "queue";
 	private String exchange = "exchange";
 	private String routingkey = "Jerry";
-	
+	private String elasticQueue = "elasticQueue";
+	private String elasticRountingKey = "elasticRountingKey";
 	@Bean
 	Queue queue()
 	{
@@ -35,4 +36,12 @@ public class RabbitMqConfiguration
 	public Jackson2JsonMessageConverter jsonMessageConverter() {
 		return new Jackson2JsonMessageConverter();
 }
+	@Bean
+	Queue elasticQueue() {
+		return new Queue (elasticQueue);
+	}
+	@Bean
+	Binding elasticBinding(Queue elasticQueue, DirectExchange exchange) {
+		return BindingBuilder.bind(elasticQueue).to(exchange).with(elasticRountingKey);
+	}
 }

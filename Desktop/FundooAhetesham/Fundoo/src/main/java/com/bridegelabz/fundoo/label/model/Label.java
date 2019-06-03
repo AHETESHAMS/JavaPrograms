@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import com.bridegelabz.fundoo.notes.model.Notes;
 import com.bridegelabz.fundoo.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "label")
 public class Label 
@@ -25,9 +26,11 @@ public class Label
 	private String name;
 	private LocalDateTime createDate;
 	private LocalDateTime modifiedDate;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@JsonIgnore
 	@ManyToMany(mappedBy="label",cascade = CascadeType.ALL)
 //	@JoinColumn(name = "note_id")
 	private List<Notes> note;
@@ -81,7 +84,7 @@ public class Label
 	@Override
 	public String toString() {
 		return "Label [id=" + id + ", name=" + name + ", createDate=" + createDate + ", modifiedDate=" + modifiedDate
-				+ ", user=" + user + ", note=" + note + "]";
+				+ ", user=" + user +"]";
 	}
 	
 }

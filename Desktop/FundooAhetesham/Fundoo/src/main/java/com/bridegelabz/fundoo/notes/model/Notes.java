@@ -2,6 +2,7 @@ package com.bridegelabz.fundoo.notes.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 
 import com.bridegelabz.fundoo.label.model.Label;
 import com.bridegelabz.fundoo.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "notes")
 public class Notes 
@@ -26,6 +28,14 @@ public class Notes
 	private String title;
 	private String description;
 	private String color;
+	private String reminder;
+	
+	public String getReminder() {
+		return reminder;
+	}
+	public void setReminder(String reminder) {
+		this.reminder = reminder;
+	}
 	public String getColor() {
 		return color;
 	}
@@ -35,6 +45,13 @@ public class Notes
 	private boolean isPin=false;
 	private boolean isArchive=false;
 	private boolean isTrash=false;
+	private boolean isRestored=false;
+	public boolean isRestored() {
+		return isRestored;
+	}
+	public void setRestored(boolean isRestored) {
+		this.isRestored = isRestored;
+	}
 	private LocalDateTime createdDateAndTime;
 	private LocalDateTime modefiedDateTime;
 	@ManyToOne
@@ -42,6 +59,22 @@ public class Notes
 	private User user;
 	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Label> label;
+	@ManyToMany
+	private Set<User> collaboratedUser;
+	@ManyToMany
+	private List<Label> listLabel;
+	public List<Label> getListLabel() {
+		return listLabel;
+	}
+	public void setListLabel(List<Label> listLabel) {
+		this.listLabel = listLabel;
+	}
+	public Set<User> getCollaboratedUser() {
+		return collaboratedUser;
+	}
+	public void setCollaboratedUser(Set<User> colUser) {
+		this.collaboratedUser = colUser;
+	}
 	public int getId() {
 		return id;
 	}
@@ -104,12 +137,11 @@ public class Notes
 	}
 	@Override
 	public String toString() {
-		return "Notes [id=" + id + ", title=" + title + ", description=" + description + ", isPin=" + isPin
-				+ ", isArchive=" + isArchive + ", isTrash=" + isTrash + ", createdDateAndTime=" + createdDateAndTime
-				+ ", modefiedDateTime=" + modefiedDateTime + ", user=" + user + ", label=" + label + "]";
+		return "Notes [id=" + id + ", title=" + title + ", description=" + description + ", color=" + color + ", isPin="
+				+ isPin + ", isArchive=" + isArchive + ", isTrash=" + isTrash + ", isRestored=" + isRestored
+				+ ", createdDateAndTime=" + createdDateAndTime + ", modefiedDateTime=" + modefiedDateTime + ", user="
+				+ user + ", label=" + label + "]";
 	}
-	
-
-	
+		
 }
 
